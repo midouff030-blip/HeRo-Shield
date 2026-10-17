@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     (bans || []).forEach(b => { byType[b.type] = (byType[b.type] || 0) + 1; });
 
     res.status(200).json({
-      server, players, bans: bans || [], logs: logs || [],
+      server, code, players, bans: bans || [], logs: logs || [],
       stats: { bans: (bans || []).length, logs: (logs || []).length, online: server.online || 0, players: players.length, byType }
     });
   } catch (e) { res.status(500).json({ error: e.message }); }

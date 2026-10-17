@@ -92,7 +92,18 @@ var TAB='bans';
 async function serverView(name){loading();var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
 if(d.error){app.innerHTML='<div class="center"><div><p style="color:var(--red)">'+esc(d.error)+'</p><a class="back" href="#/">&larr; Retour</a></div></div>';return;}
 renderUser();var st=d.stats||{},sv=d.server||{};
-var on=sv.last_seen&&(Date.now()-new Date(sv.last_seen).getTime()<180000);
+// essai : etat live depuis le navigateur (si l'API serveur etait bloquee)
+if(d.code && !sv.live){try{
+  var cr=await fetch('https://servers-frontend.fivem.net/api/servers/single/'+d.code,{headers:{'Accept':'application/json'}});
+  if(cr.ok){var cj=await cr.json();var cd=cj&&cj.Data;if(cd){
+    sv.online=cd.clients!=null?cd.clients:(cd.players||[]).length;
+    sv.max=cd.svMaxclients||cd.sv_maxclients||(cd.vars&&(cd.vars.sv_maxClients||cd.vars.sv_maxclients))||sv.max;
+    sv.hostname=(cd.hostname||'').replace(/\^\d/g,'');sv.live=true;
+    d.players=(cd.players||[]).map(function(p){return {id:p.id,name:(p.name||'').replace(/\^\d/g,''),ping:p.ping};});
+    st.online=sv.online;st.players=d.players.length;
+  }}
+}catch(e){}}
+var on=sv.live||(sv.last_seen&&(Date.now()-new Date(sv.last_seen).getTime()<180000));
 var top=Object.keys(st.byType||{}).sort(function(a,b){return st.byType[b]-st.byType[a];})[0]||'—';
 
 function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel empty">Aucun ban. ✅</div>';
