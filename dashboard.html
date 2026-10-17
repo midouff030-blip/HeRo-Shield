@@ -2,133 +2,331 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard — HeRo Shield</title>
+<title>Customer Area — HeRo Shield</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#060a12;--panel:#0e1726;--panel2:#132033;--line:#1d2c42;--txt:#eaf1fb;--mut:#8699b4;--dim:#56678a;--cy:#1fe3c6;--blu:#5b9dff;--cysoft:rgba(31,227,198,.12);--amber:#ffbb3c;--red:#ff5169;--r:14px;--rs:10px}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:15px;line-height:1.55;background:radial-gradient(800px 480px at 80% -10%,rgba(31,227,198,.08),transparent 60%),var(--bg);background-attachment:fixed}
+:root{--bg:#070b12;--side:#0b111c;--panel:#0e1726;--panel2:#13203300;--card:#101a2b;--line:#1b2840;--line2:#243consts;--line2:#22324e;--txt:#eaf1fb;--mut:#8699b4;--dim:#56678a;--cy:#1fe3c6;--blu:#5b9dff;--cysoft:rgba(31,227,198,.12);--blusoft:rgba(91,157,255,.12);--amber:#ffbb3c;--red:#ff5169;--grn:#36d399;--r:14px;--rs:10px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14.5px;line-height:1.55}
 h1,h2,h3,h4{font-family:'Chakra Petch',sans-serif;margin:0;letter-spacing:-.01em}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
-.nav{position:sticky;top:0;z-index:50;background:rgba(6,10,18,.76);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Chakra Petch';font-weight:700;font-size:18px}.logo svg{width:28px;height:28px}.logo b{color:var(--cy)}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Chakra Petch';font-weight:600;font-size:14px;border:0;border-radius:var(--rs);padding:10px 17px;cursor:pointer;transition:.15s}
+input{font-family:inherit;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--rs);color:var(--txt);padding:11px 13px;outline:none}
+input:focus{border-color:var(--cy)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Chakra Petch';font-weight:600;font-size:13.5px;border:0;border-radius:var(--rs);padding:10px 16px;cursor:pointer;transition:.15s;white-space:nowrap}
 .btn-primary{background:linear-gradient(135deg,var(--cy),var(--blu));color:#04231f}.btn-primary:hover{filter:brightness(1.07)}
 .btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}.btn-ghost:hover{border-color:var(--mut)}
-.chip{display:inline-flex;align-items:center;gap:8px;font-size:13.5px}.chip img{width:26px;height:26px;border-radius:50%}
-.center{min-height:64vh;display:grid;place-items:center;text-align:center}
-.spin{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--cy);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto}@keyframes sp{to{transform:rotate(360deg)}}
-main{padding:32px 0 70px;min-height:70vh}
-.head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:22px;flex-wrap:wrap}
-.srv{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:17px 19px;margin-bottom:12px;cursor:pointer;transition:.15s}
-.srv:hover{border-color:var(--cy);background:var(--panel2)}
-.srv .nm{font-family:'Chakra Petch';font-weight:600;font-size:16px}
-.srv .s{color:var(--mut);font-size:12.5px;margin-top:3px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.dot.on{background:var(--cy)}.dot.off{background:var(--dim)}
-.tabs{display:flex;gap:8px;margin:4px 0 18px;flex-wrap:wrap}
-.tab{font-family:'Chakra Petch';font-weight:600;font-size:13.5px;padding:8px 15px;border-radius:999px;border:1px solid var(--line);color:var(--mut);cursor:pointer}
-.tab.act{background:var(--cysoft);border-color:var(--cy);color:var(--cy)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.stat{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:16px}
-.stat .n{font-family:'Chakra Petch';font-weight:700;font-size:25px}.stat .n.cy{color:var(--cy)}.stat .n.rd{color:var(--red)}
-.stat .l{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
-.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
-table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
-th{font-family:'Chakra Petch';font-weight:600;color:var(--mut);font-size:12px}
-.tag{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:3px 8px;border-radius:999px}
+.btn-sm{padding:6px 11px;font-size:12.5px}
+
+/* ===== LAYOUT ===== */
+.shell{display:flex;min-height:100vh}
+.side{width:262px;flex-shrink:0;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.side-top{padding:18px 18px 14px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
+.side-top svg{width:34px;height:34px;flex-shrink:0}
+.side-top .tt{font-family:'Chakra Petch';font-weight:700;font-size:15.5px;line-height:1.15}
+.side-top .tt b{color:var(--cy)}
+.side-top .sub{color:var(--dim);font-size:11.5px;margin-top:1px}
+.nav-sec{padding:14px 12px 4px;color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;font-family:'Chakra Petch';font-weight:600}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 10px}
+.nav a,.nav button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:0;border:0;color:var(--mut);font-family:Inter;font-size:14px;padding:9px 11px;border-radius:9px;cursor:pointer;transition:.12s}
+.nav a:hover,.nav button:hover{background:var(--panel);color:var(--txt)}
+.nav a.act,.nav button.act{background:var(--cysoft);color:var(--cy)}
+.nav .ic{width:17px;height:17px;flex-shrink:0;opacity:.9}
+.srvlist{padding:4px 10px 10px;display:flex;flex-direction:column;gap:2px;flex:1}
+.srvbtn{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:0;border:0;color:var(--mut);font-size:13.5px;padding:8px 11px;border-radius:9px;cursor:pointer;transition:.12s;font-family:Inter}
+.srvbtn:hover{background:var(--panel);color:var(--txt)}
+.srvbtn.act{background:var(--panel);color:var(--txt)}
+.srvbtn .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srvbtn .car{transition:.15s;color:var(--dim);font-size:11px}
+.srvbtn.open .car{transform:rotate(90deg)}
+.subnav{display:none;flex-direction:column;gap:1px;margin:2px 0 6px 13px;padding-left:9px;border-left:1px solid var(--line)}
+.subnav.open{display:flex}
+.subnav button{display:flex;align-items:center;gap:9px;background:0;border:0;color:var(--dim);font-size:13px;padding:7px 10px;border-radius:8px;cursor:pointer;font-family:Inter;text-align:left;width:100%}
+.subnav button:hover{background:var(--panel);color:var(--txt)}
+.subnav button.act{color:var(--cy);background:var(--cysoft)}
+.side-bot{border-top:1px solid var(--line);padding:8px 10px 12px;display:flex;flex-direction:column;gap:2px}
+
+.main{flex:1;min-width:0}
+.topbar{height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 24px;position:sticky;top:0;background:rgba(7,11,18,.82);backdrop-filter:blur(12px);z-index:20}
+.crumb{color:var(--dim);font-size:13.5px;font-family:'Chakra Petch'}
+.crumb b{color:var(--txt);font-weight:600}
+.topbar .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mut)}.chip img{width:26px;height:26px;border-radius:50%}
+.content{padding:26px 28px 70px;max-width:1240px}
+
+.page-h{margin-bottom:22px}
+.page-h h1{font-size:23px}
+.page-h p{color:var(--mut);font-size:13.5px;margin:5px 0 0}
+
+/* banner */
+.banner{height:118px;border-radius:var(--r);background:linear-gradient(100deg,#0d1a2e,#122a44);border:1px solid var(--line);margin-bottom:16px;overflow:hidden;position:relative;display:flex;align-items:center;padding:0 26px}
+.banner:after{content:"";position:absolute;inset:0;background:radial-gradient(500px 200px at 85% 50%,rgba(31,227,198,.18),transparent 70%)}
+.banner .bsvg{width:66px;height:66px;opacity:.9;position:relative}
+
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px}
+.card .ch{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:12.5px;margin-bottom:12px;font-family:'Chakra Petch';font-weight:600}
+.card .ch .ci{width:16px;height:16px;opacity:.85}
+.card .big{font-family:'Chakra Petch';font-weight:700;font-size:21px;line-height:1.1}
+.card .small{color:var(--dim);font-size:12px;margin-top:3px}
+.badge{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:4px 10px;border-radius:999px;margin-left:auto}
+.badge.on{background:rgba(54,211,153,.15);color:var(--grn)}
+.badge.off{background:rgba(255,81,105,.14);color:var(--red)}
+.badge.free{background:var(--cysoft);color:var(--cy)}
+.keymask{font-family:ui-monospace,monospace;font-size:13px;letter-spacing:1px;color:var(--mut);word-break:break-all}
+.row-btns{display:flex;gap:7px;margin-top:11px}
+
+.analytics{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
+.analytics .ah{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.analytics .ah h3{font-size:15.5px}.analytics .ah p{color:var(--mut);font-size:12.5px;margin:3px 0 0}
+.seg{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{background:0;border:0;color:var(--mut);font-size:12.5px;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Chakra Petch';font-weight:600}
+.seg button.act{background:var(--cysoft);color:var(--cy)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.metric .ml{color:var(--dim);font-size:12px;margin-bottom:4px}
+.metric .mv{font-family:'Chakra Petch';font-weight:700;font-size:26px}
+.metric .mv.cy{color:var(--cy)}.metric .mv.rd{color:var(--red)}
+.chart-empty{text-align:center;color:var(--mut);padding:40px 0 10px}
+.chart-empty svg{width:40px;height:40px;opacity:.4;margin-bottom:10px}
+
+/* tables */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:0;margin-bottom:14px;overflow:hidden}
+.panel-h{padding:15px 18px;border-bottom:1px solid var(--line);font-family:'Chakra Petch';font-weight:600;font-size:15px;display:flex;align-items:center;gap:9px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:'Chakra Petch';font-weight:600;color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
+.tag{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:3px 9px;border-radius:999px}
 .tag.ban{background:rgba(255,81,105,.14);color:var(--red)}.tag.kick{background:rgba(255,187,60,.14);color:var(--amber)}.tag.log{background:rgba(91,157,255,.14);color:var(--blu)}
-.key{font-family:ui-monospace,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:2px 7px;font-size:11.5px;color:var(--cy)}
-.proof{width:120px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block}
-.empty{color:var(--mut);text-align:center;padding:28px}
-.back{color:var(--mut);font-family:'Chakra Petch';font-size:13.5px}.back:hover{color:var(--txt)}
-.logrow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.key{font-family:ui-monospace,monospace;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:2px 7px;font-size:11px;color:var(--cy)}
+.proof{width:108px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block}
+.empty{color:var(--mut);text-align:center;padding:34px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}.dot.on{background:var(--grn)}.dot.off{background:var(--dim)}
+.logrow{display:flex;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);font-size:13px}
+.logrow:last-child{border-bottom:0}
 .logrow .t{color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
-.lv{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;place-items:center;z-index:90;cursor:zoom-out}.lv.on{display:grid}.lv img{max-width:92vw;max-height:92vh;border-radius:10px}
-@media(max-width:720px){.stats{grid-template-columns:1fr 1fr}}
+
+/* download */
+.dl-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:16px}
+.dl-box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.dl-circle{width:150px;height:150px;margin:18px auto;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;position:relative;transition:.15s;background:radial-gradient(120px 120px at 50% 40%,rgba(31,227,198,.08),transparent)}
+.dl-circle:hover{border-color:var(--cy);transform:translateY(-2px)}
+.dl-circle:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--line);opacity:.5}
+.dl-circle svg{width:38px;height:38px;color:var(--cy)}
+.dl-circle span{position:absolute;bottom:34px;font-family:'Chakra Petch';font-weight:600;font-size:13px;color:var(--cy)}
+.step{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0}
+.step .num{width:26px;height:26px;border-radius:50%;background:var(--cysoft);color:var(--cy);display:grid;place-items:center;font-family:'Chakra Petch';font-weight:700;font-size:12.5px;flex-shrink:0}
+.step .st{font-family:'Chakra Petch';font-weight:600;font-size:14px;margin-bottom:5px}
+.step .sd{color:var(--mut);font-size:13px}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;overflow-x:auto;font-size:12.5px;color:var(--txt);margin:8px 0 0;font-family:ui-monospace,monospace}
+
+/* generic */
+.center{min-height:70vh;display:grid;place-items:center;text-align:center}
+.spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--cy);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto}@keyframes sp{to{transform:rotate(360deg)}}
+.lv{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;place-items:center;z-index:90;cursor:zoom-out}.lv.on{display:grid}.lv img{max-width:92vw;max-height:92vh;border-radius:10px}
+.copied{color:var(--grn);font-size:12.5px}
+.hamb{display:none;background:0;border:0;color:var(--txt);cursor:pointer}
+@media(max-width:920px){
+  .side{position:fixed;left:-280px;z-index:60;transition:.2s}.side.open{left:0}
+  .hamb{display:block}.cards,.metrics{grid-template-columns:1fr 1fr}.dl-grid{grid-template-columns:1fr}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;display:none}.scrim.on{display:block}
+}
+@media(max-width:560px){.cards,.metrics{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<nav class="nav"><div class="wrap">
-  <a class="logo" href="/"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#g)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>HeRo<b>Shield</b></a>
-  <div id="navUser"></div>
-</div></nav>
-<main class="wrap" id="app"><div class="center"><div class="spin"></div></div></main>
+<div class="shell">
+  <aside class="side" id="side">
+    <div class="side-top">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#g)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>
+      <div><div class="tt">HeRo <b>Shield</b></div><div class="sub">Customer Area</div></div>
+    </div>
+    <div class="nav-sec">Menu</div>
+    <div class="nav">
+      <button data-nav="home" onclick="go('#/')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
+      <button data-nav="redeem" onclick="go('#/redeem')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.3L12 15.3 7.2 17l.9-5.3L4.2 7.7l5.4-.8z"/></svg>Redeem</button>
+      <button data-nav="download" onclick="go('#/download')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>Download</button>
+    </div>
+    <div class="nav-sec">My Servers</div>
+    <div class="srvlist" id="srvlist"><div style="padding:10px 11px;color:var(--dim);font-size:12.5px">Chargement…</div></div>
+    <div class="side-bot">
+      <div class="nav">
+        <a href="https://discord.gg/" target="_blank"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4.4A17 17 0 0015.6 3l-.3.5a12 12 0 013.7 1.9 15.8 15.8 0 00-13.9 0A12 12 0 018.7 3.5L8.4 3A17 17 0 004 4.4 18 18 0 001 16.9a17 17 0 005.2 2.6l.4-.6a11 11 0 01-1.8-.9l.4-.3a12 12 0 0010.3 0l.4.3a11 11 0 01-1.8.9l.4.6A17 17 0 0023 16.9 18 18 0 0020 4.4zM9.3 14.5c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7zm5.4 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7z"/></svg>Support</a>
+        <a href="#/download" onclick="go('#/download')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Documentation</a>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" onclick="toggleSide(0)"></div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamb" onclick="toggleSide(1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="crumb" id="crumb">Dashboard</div>
+      <div class="sp"></div>
+      <div id="navUser"></div>
+    </div>
+    <div class="content" id="app"><div class="center"><div class="spin"></div></div></div>
+  </div>
+</div>
 <div class="lv" id="lv" onclick="this.classList.remove('on')"><img id="lvimg" src=""></div>
+
 <script>
-var app=document.getElementById('app'),navUser=document.getElementById('navUser'),ME=null;
+var app=document.getElementById('app'),navUser=document.getElementById('navUser'),crumb=document.getElementById('crumb'),srvlist=document.getElementById('srvlist');
+var ME=null, SERVERS=[], OPEN=null; // OPEN = nom du serveur deplie dans le sidebar
 function esc(s){return (s==null?'':s).toString().replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
+function qesc(s){return esc(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 function loading(){app.innerHTML='<div class="center"><div class="spin"></div></div>';}
 function when(t){try{return new Date(t).toLocaleString('fr-FR');}catch(e){return t;}}
 function dur(s){s=Number(s)||0;var h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h>0?(h+'h '+m+'m'):(m+'m');}
+function isOn(ls){return ls&&(Date.now()-new Date(ls).getTime()<180000);}
 async function api(p,o){try{var r=await fetch('/api/'+p,{credentials:'same-origin',...(o||{})});if(r.status===401){ME=null;return{unauth:true};}return await r.json();}catch(e){return{neterr:true};}}
-var SHIELD='<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#gc)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gc" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>';
+function go(h){if(location.hash===h){route();}else{location.hash=h;}toggleSide(0);}
+function toggleSide(on){document.getElementById('side').classList.toggle('open',!!on);document.getElementById('scrim').classList.toggle('on',!!on);}
 function zoom(u){document.getElementById('lvimg').src=u;document.getElementById('lv').classList.add('on');}
+window.zoom=zoom;window.go=go;window.toggleSide=toggleSide;
+var SHIELD='<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#gc)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gc" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>';
 
-function loginView(){navUser.innerHTML='';app.innerHTML='<div class="center"><div><div style="width:54px;height:54px;margin:0 auto 16px">'+SHIELD+'</div><h1 style="font-size:28px">Dashboard HeRo Shield</h1><p style="color:var(--mut);margin:10px 0 22px">Connecte-toi avec Discord pour voir tes serveurs proteges.</p><a class="btn btn-primary" href="/api/auth-login">Se connecter avec Discord</a></div></div>';}
-function renderUser(){var av=ME.avatar?'https://cdn.discordapp.com/avatars/'+ME.id+'/'+ME.avatar+'.png?size=48':'https://cdn.discordapp.com/embed/avatars/0.png';navUser.innerHTML='<span class="chip"><img src="'+av+'"> '+esc(ME.username)+' &nbsp;<a class="btn btn-ghost" href="/api/logout">Deconnexion</a></span>';}
+window.cp=function(txt,btn){try{navigator.clipboard.writeText(txt);var o=btn.textContent;btn.textContent='Copié ✓';setTimeout(function(){btn.textContent=o;},1400);}catch(e){}};
 
-async function home(){loading();var d=await api('me');if(d.unauth||d.neterr||!d.user)return loginView();ME=d.user;renderUser();
-var srv=d.servers||[];
-var cards=srv.map(function(s){var on=s.last_seen&&(Date.now()-new Date(s.last_seen).getTime()<180000);
-return '<div class="srv" onclick="location.hash=\'#/s/'+encodeURIComponent(s.name)+'\'"><div><div class="nm">'+esc(s.name||'Serveur')+'</div><div class="s"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(s.online||0)+'/'+(s.max||0)+' joueurs'):('hors ligne • vu '+when(s.last_seen)))+'</div></div><div style="display:flex;gap:8px"><button class="btn btn-ghost" style="padding:8px 12px" title="Supprimer" onclick="delServer(\''+esc(s.name).replace(/'/g,"\\\\'")+'\',event)">🗑</button><div class="btn btn-ghost">Ouvrir &rarr;</div></div></div>';}).join('');
-app.innerHTML='<div class="head"><div><h1 style="font-size:24px">Tes serveurs</h1><div style="color:var(--mut);font-size:14px;margin-top:4px">Serveurs proteges par HeRo Shield.</div></div></div>'+
- (cards||'<div class="panel empty">Aucun serveur connecte pour l\'instant. Connecte-en un ci-dessous.</div>')+
- '<div class="panel"><h3 style="font-size:15px;margin-bottom:4px">+ Ajouter un serveur</h3><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Donne un nom a ton serveur. Tu recevras une <b>cle unique</b> a coller dans ton config.lua.</div>'+
- '<div style="display:flex;gap:10px;flex-wrap:wrap"><input id="c_name" placeholder="Nom de ton serveur" style="flex:1;min-width:240px"><button class="btn btn-primary" id="c_btn">Creer la cle</button></div>'+
- '<div id="c_out" style="margin-top:12px"></div></div>';
-document.getElementById('c_btn').onclick=async function(){
-  var name=document.getElementById('c_name').value.trim();
-  if(!name){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">Entre un nom de serveur.</span>';return;}
-  this.textContent='...';this.disabled=true;
-  var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});
-  this.textContent='Creer la cle';this.disabled=false;
-  if(r.ok){var snip='Config.ReportingUrl   = "'+location.origin+'/api/ingest"\nConfig.ReportingToken = "'+r.key+'"\nConfig.LicenseUrl     = "'+location.origin+'/api/license/validate"';
-    window.__snip=snip;window.__key=r.key;
-    document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:10px">✓ '+esc(r.name)+' cree ! Garde bien ta cle.</div>'+
-    '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="key" style="font-size:14px;padding:6px 12px">'+esc(r.key)+'</span><button class="btn btn-ghost" onclick="cp(window.__key,this)">Copier la cle</button></div>'+
-    '<div style="color:var(--mut);font-size:13px">Colle ceci dans ton <b>config.lua</b> puis redemarre le resource :</div>'+
-    '<pre style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:12.5px;color:var(--txt);margin-top:8px">'+esc(snip)+'</pre>'+
-    '<div style="display:flex;gap:10px;margin-top:8px"><button class="btn btn-primary" onclick="cp(window.__snip,this)">Copier la config</button><button class="btn btn-ghost" onclick="home()">Voir mes serveurs</button></div>';}
-  else{document.getElementById('c_out').innerHTML='<span style="color:var(--red)">'+esc(r.error||'Erreur')+'</span>';}
-};}
-window.cp=function(txt,btn){try{navigator.clipboard.writeText(txt);var o=btn.textContent;btn.textContent='Copie ✓';setTimeout(function(){btn.textContent=o;},1400);}catch(e){}};
-window.delServer=async function(name,ev){ev.stopPropagation();ev.preventDefault();if(!confirm('Supprimer "'+name+'" et toutes ses donnees ?'))return;var r=await api('delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});if(r.ok)home();else alert(r.error||'Erreur');};
-
-var TAB='bans';
-async function serverView(name){loading();var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
-if(d.error){app.innerHTML='<div class="center"><div><p style="color:var(--red)">'+esc(d.error)+'</p><a class="back" href="#/">&larr; Retour</a></div></div>';return;}
-renderUser();var st=d.stats||{},sv=d.server||{};
-var on=sv.last_seen&&(Date.now()-new Date(sv.last_seen).getTime()<180000);
-var top=Object.keys(st.byType||{}).sort(function(a,b){return st.byType[b]-st.byType[a];})[0]||'—';
-
-function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel empty">Aucun ban. ✅</div>';
- return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Raison</th><th>Detail</th><th>Preuve</th><th>Quand</th></tr></thead><tbody>'+
- b.map(function(x){var img=x.screenshot?('<img class="proof" src="'+esc(x.screenshot)+'" onclick="zoom(\''+esc(x.screenshot)+'\')">'):'<span style="color:var(--dim)">—</span>';
- return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut)">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim)">'+when(x.created_at)+'</td></tr>';}).join('')+
- '</tbody></table></div></div>';}
-
-function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel empty">Aucun joueur enregistre pour l\'instant.</div>';
- return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Vu</th></tr></thead><tbody>'+
- p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td>'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
- '</tbody></table></div></div>';}
-
-function logsHTML(){var l=d.logs||[];if(!l.length)return '<div class="panel empty">Aucun log.</div>';
- return '<div class="panel">'+l.map(function(x){return '<div class="logrow"><span class="t">'+when(x.created_at)+'</span><span class="tag log">'+esc(x.type||'')+'</span><span>'+esc(x.detail||'')+'</span></div>';}).join('')+'</div>';}
-
-function render(){
- var body=TAB==='bans'?bansHTML():TAB==='players'?playersHTML():logsHTML();
- app.innerHTML='<a class="back" href="#/">&larr; Serveurs</a><div class="head" style="margin-top:8px"><div><h1 style="font-size:24px">'+esc(sv.name||name)+'</h1><div style="color:var(--mut);font-size:13px;margin-top:4px"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(sv.online||0)+'/'+(sv.max||0)):'hors ligne')+'</div></div><button class="btn btn-ghost" onclick="serverView(\''+esc(name).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">Rafraichir</button></div>'+
- '<div class="stats"><div class="stat"><div class="n rd">'+(st.bans||0)+'</div><div class="l">Bans/actions</div></div><div class="stat"><div class="n cy">'+(st.online||0)+'</div><div class="l">En ligne</div></div><div class="stat"><div class="n">'+(st.players||0)+'</div><div class="l">Joueurs connus</div></div><div class="stat"><div class="n">'+esc(top)+'</div><div class="l">Triche #1</div></div></div>'+
- '<div class="tabs"><div class="tab '+(TAB==='bans'?'act':'')+'" onclick="setTab(\'bans\')">Bans &amp; preuves</div><div class="tab '+(TAB==='players'?'act':'')+'" onclick="setTab(\'players\')">Joueurs</div><div class="tab '+(TAB==='logs'?'act':'')+'" onclick="setTab(\'logs\')">Logs</div></div>'+body;
+/* ===== AUTH / CHROME ===== */
+function loginView(){
+  navUser.innerHTML='';srvlist.innerHTML='';crumb.textContent='Connexion';
+  app.innerHTML='<div class="center"><div><div style="width:56px;height:56px;margin:0 auto 16px">'+SHIELD+'</div><h1 style="font-size:26px">Customer Area</h1><p style="color:var(--mut);margin:10px 0 22px">Connecte-toi avec Discord pour gérer tes serveurs protégés.</p><a class="btn btn-primary" href="/api/auth-login">Se connecter avec Discord</a></div></div>';
 }
-window.setTab=function(t){TAB=t;render();};
-window.serverView=serverView;window.zoom=zoom;
-render();}
+function renderUser(){
+  var av=ME.avatar?'https://cdn.discordapp.com/avatars/'+ME.id+'/'+ME.avatar+'.png?size=48':'https://cdn.discordapp.com/embed/avatars/0.png';
+  navUser.innerHTML='<span class="chip"><img src="'+av+'"> '+esc(ME.username)+' &nbsp;<a class="btn btn-ghost btn-sm" href="/api/logout">Déconnexion</a></span>';
+}
+function setActive(nav){document.querySelectorAll('.nav [data-nav]').forEach(function(b){b.classList.toggle('act',b.getAttribute('data-nav')===nav);});}
+function renderSidebarServers(activeName,activeSub){
+  if(!SERVERS.length){srvlist.innerHTML='<div style="padding:10px 11px;color:var(--dim);font-size:12.5px">Aucun serveur.<br><a style="color:var(--cy)" href="#/redeem" onclick="go(\'#/redeem\')">+ Ajouter</a></div>';return;}
+  srvlist.innerHTML=SERVERS.map(function(s){
+    var on=isOn(s.last_seen),op=(OPEN===s.name);
+    var subs=[['dash','Dashboard'],['players','Players'],['bans','Bans'],['logs','Logs']];
+    return '<button class="srvbtn'+(op?' open':'')+(activeName===s.name&&!activeSub?' act':'')+'" onclick="toggleSrv(\''+qesc(s.name)+'\')"><span class="dot '+(on?'on':'off')+'"></span><span class="nm">'+esc(s.name||'Serveur')+'</span><span class="car">▶</span></button>'+
+      '<div class="subnav'+(op?' open':'')+'" id="sub_'+btoa(unescape(encodeURIComponent(s.name))).replace(/=/g,'')+'">'+
+      subs.map(function(x){return '<button class="'+(activeName===s.name&&activeSub===x[0]?'act':'')+'" onclick="go(\'#/s/'+encodeURIComponent(s.name)+'/'+x[0]+'\')">'+x[1]+'</button>';}).join('')+
+      '</div>';
+  }).join('');
+}
+window.toggleSrv=function(name){ if(OPEN===name){ // deja ouvert -> aller a son dashboard
+    go('#/s/'+encodeURIComponent(name)+'/dash'); } else { OPEN=name; renderSidebarServers(name,null); go('#/s/'+encodeURIComponent(name)+'/dash'); } };
 
-function route(){var m=location.hash.match(/^#\/s\/(.+)/);if(m)return serverView(decodeURIComponent(m[1]));return home();}
-window.addEventListener('hashchange',route);route();
+async function ensureMe(){ if(ME&&SERVERS.length>=0&&ME.__loaded) return true; var d=await api('me'); if(d.unauth||d.neterr||!d.user){return false;} ME=d.user;ME.__loaded=true;SERVERS=d.servers||[]; renderUser(); return true; }
+
+/* ===== PAGE : DASHBOARD (global) ===== */
+async function home(){loading();if(!await ensureMe())return loginView();setActive('home');OPEN=null;renderSidebarServers();crumb.innerHTML='<b>Dashboard</b>';
+  var cards=SERVERS.map(function(s){var on=isOn(s.last_seen);
+    return '<div class="card" style="cursor:pointer" onclick="go(\'#/s/'+encodeURIComponent(s.name)+'/dash\')"><div class="ch">'+SHIELD_SM+esc(s.name||'Serveur')+'<span class="badge '+(on?'on':'off')+'">'+(on?'Online':'Offline')+'</span></div><div class="big">'+(on?((s.online||0)+'/'+(s.max||0)):'—')+'</div><div class="small">'+(on?'joueurs en ligne':'vu '+when(s.last_seen))+'</div></div>';
+  }).join('');
+  app.innerHTML='<div class="page-h"><h1>Mes serveurs</h1><p>Vue d\'ensemble de tes serveurs protégés par HeRo Shield.</p></div>'+
+    (cards?'<div class="cards">'+cards+'</div>':'<div class="panel"><div class="empty">Aucun serveur connecté. Va dans <b>Redeem</b> pour créer une clé.</div></div>')+
+    '<div style="display:flex;gap:10px;margin-top:4px"><button class="btn btn-primary" onclick="go(\'#/redeem\')">+ Ajouter un serveur</button><button class="btn btn-ghost" onclick="go(\'#/download\')">Télécharger le resource</button></div>';
+}
+var SHIELD_SM='<span class="ci" style="width:16px;height:16px;display:inline-block">'+SHIELD+'</span>';
+
+/* ===== PAGE : REDEEM (creer une cle) ===== */
+async function redeem(){loading();if(!await ensureMe())return loginView();setActive('redeem');crumb.innerHTML='Dashboard &nbsp;›&nbsp; <b>Redeem</b>';
+  app.innerHTML='<div class="page-h"><h1>Redeem — Nouvelle clé serveur</h1><p>Donne un nom à ton serveur. Tu reçois une <b>clé unique</b> à coller dans ton config.lua.</p></div>'+
+   '<div class="panel" style="padding:20px"><div style="display:flex;gap:10px;flex-wrap:wrap"><input id="c_name" placeholder="Nom de ton serveur (ex: Strada Roleplay)" style="flex:1;min-width:260px"><button class="btn btn-primary" id="c_btn">Créer la clé</button></div><div id="c_out" style="margin-top:14px"></div></div>'+
+   '<div class="panel" style="padding:20px;margin-top:4px"><h3 style="font-size:15px;margin-bottom:6px">Déjà une clé ?</h3><div style="color:var(--mut);font-size:13px">Colle-la dans <b>config.lua</b> → <span class="key">Config.ReportingToken</span>, puis démarre le resource. Ton serveur apparaîtra 🟢 automatiquement dans quelques secondes.</div></div>';
+  document.getElementById('c_btn').onclick=async function(){
+    var name=document.getElementById('c_name').value.trim();
+    if(!name){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">Entre un nom de serveur.</span>';return;}
+    this.textContent='…';this.disabled=true;
+    var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});
+    this.textContent='Créer la clé';this.disabled=false;
+    if(r.ok){
+      var snip='Config.ReportingUrl   = "'+location.origin+'/api/ingest"\nConfig.ReportingToken = "'+r.key+'"\nConfig.LicenseUrl     = "'+location.origin+'/api/license/validate"';
+      window.__snip=snip;window.__key=r.key;
+      document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:10px">✓ '+esc(r.name)+' créé ! Garde bien ta clé.</div>'+
+        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="key" style="font-size:14px;padding:7px 12px">'+esc(r.key)+'</span><button class="btn btn-ghost btn-sm" onclick="cp(window.__key,this)">Copier la clé</button></div>'+
+        '<div style="color:var(--mut);font-size:13px">Colle ceci dans ton <b>config.lua</b> puis redémarre le resource :</div><pre>'+esc(snip)+'</pre>'+
+        '<div style="display:flex;gap:10px;margin-top:10px"><button class="btn btn-primary" onclick="cp(window.__snip,this)">Copier la config</button><button class="btn btn-ghost" onclick="location.reload()">Voir mes serveurs</button></div>';
+    } else { document.getElementById('c_out').innerHTML='<span style="color:var(--red)">'+esc(r.error||'Erreur')+'</span>'; }
+  };
+}
+
+/* ===== PAGE : DOWNLOAD ===== */
+async function download(){loading();if(!await ensureMe())return loginView();setActive('download');crumb.innerHTML='Dashboard &nbsp;›&nbsp; <b>Download</b>';
+  app.innerHTML='<div class="page-h"><h1>Télécharge HeRo Shield Anti-Cheat</h1><p>La dernière version du resource, prête pour ton serveur FiveM.</p></div>'+
+   '<div class="dl-grid">'+
+     '<div class="dl-box" style="text-align:center"><h3 style="font-size:16px">Download HeRo Shield</h3><p style="color:var(--mut);font-size:13px;margin:6px 0 0">Télécharge et commence à protéger ton serveur.</p>'+
+       '<a class="dl-circle" href="/HeRoShield.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg><span>Download</span></a>'+
+       '<div style="color:var(--dim);font-size:12px">v1.1.0 • ESX / QBCore / Qbox / Standalone</div></div>'+
+     '<div class="dl-box"><h3 style="font-size:16px;margin-bottom:4px">Guide d\'installation</h3><p style="color:var(--blu);font-size:13px;margin:0 0 10px">Suis ces étapes rapides.</p>'+
+       '<div class="step"><div class="num">1</div><div><div class="st">Place le dossier <b>HeRoShield</b> dans <b>/resources</b></div><div class="sd">Directement dans resources, pas dans un sous-dossier.</div></div></div>'+
+       '<div class="step"><div class="num">2</div><div><div class="st">Ajoute en HAUT de ton <b>server.cfg</b> :</div><pre>ensure HeRoShield</pre></div></div>'+
+       '<div class="step"><div class="num">3</div><div><div class="st">Colle ta clé dans <b>config.lua</b></div><div class="sd"><span class="key">Config.ReportingToken = "HS-…"</span> — récupère-la dans Redeem.</div></div></div>'+
+       '<div class="step"><div class="num">4</div><div><div class="st">Démarre ton serveur et profite de la protection !</div><div class="sd">Le serveur apparaît 🟢 ici automatiquement.</div></div></div>'+
+     '</div>'+
+   '</div>';
+}
+
+/* ===== PAGE : SERVER (dash / players / bans / logs) ===== */
+async function serverView(name,sub){sub=sub||'dash';loading();if(!await ensureMe())return loginView();
+  OPEN=name;renderSidebarServers(name,sub);setActive(null);
+  var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
+  if(d.error){crumb.innerHTML='Dashboard';app.innerHTML='<div class="center"><div><p style="color:var(--red)">'+esc(d.error)+'</p><a class="btn btn-ghost" href="#/" onclick="go(\'#/\')">← Retour</a></div></div>';return;}
+  var st=d.stats||{},sv=d.server||{},on=isOn(sv.last_seen);
+  crumb.innerHTML='Dashboard &nbsp;›&nbsp; <b>'+esc(sv.name||name)+'</b>';
+  var SUBLBL={dash:'Server Dashboard',players:'Players',bans:'Bans',logs:'Logs'};
+
+  function headDash(){
+    var mask='•'.repeat(28);
+    return '<div class="banner"><div class="bsvg">'+SHIELD+'</div></div>'+
+    '<div class="page-h" style="margin-bottom:14px"><h1>'+esc(sv.name||name)+'</h1><p>Monitoring & gestion de ton serveur.</p></div>'+
+    '<div class="cards">'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Server Status<span class="badge '+(on?'on':'off')+'">'+(on?'Online':'Offline')+'</span></div><div class="big">'+esc(sv.name||name)+'</div><div class="small">v1.1.0 • HeRo Shield</div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Server IP</div><div class="big" style="font-size:17px">'+(on?'Détecté ✓':'Non défini')+'</div><div class="small">détecté via le resource</div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 14a3 3 0 100-6 3 3 0 000 6zm3-3h8m-3 0v3"/></svg>License Key</div><div class="keymask" id="keymask">'+mask+'</div><div class="row-btns"><button class="btn btn-ghost btn-sm" id="kshow">Show</button><button class="btn btn-ghost btn-sm" onclick="cp(window.__srvkey,this)">Copy</button></div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Licence<span class="badge free">Gratuit</span></div><div class="big">∞</div><div class="small">illimité — 100% gratuit</div></div>'+
+    '</div>'+
+    '<div class="analytics"><div class="ah"><div><h3>Server Analytics</h3><p>Statistiques joueurs & performances.</p></div><div class="seg"><button class="act">Aujourd\'hui</button><button>7 jours</button><button>30 jours</button></div></div>'+
+      '<div class="metrics"><div class="metric"><div class="ml">Joueurs actuels</div><div class="mv cy">'+(on?(sv.online||0):0)+'<span style="font-size:14px;color:var(--dim)"> / '+(sv.max||0)+'</span></div></div>'+
+        '<div class="metric"><div class="ml">Joueurs bannis</div><div class="mv rd">'+(st.bans||0)+'</div></div>'+
+        '<div class="metric"><div class="ml">Pic joueurs</div><div class="mv">'+((st.players? (sv.max||0):'—'))+'</div></div>'+
+        '<div class="metric"><div class="ml">Joueurs connus</div><div class="mv">'+(st.players||0)+'</div></div></div>'+
+      ((st.bans||st.logs)?'':'<div class="chart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><div>Pas encore de données. Elles arrivent dès que le serveur tourne un moment.</div></div>')+
+    '</div>';
+  }
+  function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel"><div class="empty">Aucun ban. ✅</div></div>';
+    return '<div class="panel"><div class="panel-h">Bans & preuves</div><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Raison</th><th>Détail</th><th>Preuve</th><th>Quand</th></tr></thead><tbody>'+
+      b.map(function(x){var img=x.screenshot?('<img class="proof" src="'+esc(x.screenshot)+'" onclick="zoom(\''+esc(x.screenshot)+'\')">'):'<span style="color:var(--dim)">—</span>';
+      return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut)">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim)">'+when(x.created_at)+'</td></tr>';}).join('')+
+      '</tbody></table></div></div>';}
+  function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel"><div class="empty">Aucun joueur enregistré pour l\'instant.</div></div>';
+    return '<div class="panel"><div class="panel-h">Joueurs & temps de jeu</div><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Vu</th></tr></thead><tbody>'+
+      p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td>'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
+      '</tbody></table></div></div>';}
+  function logsHTML(){var l=d.logs||[];if(!l.length)return '<div class="panel"><div class="empty">Aucun log.</div></div>';
+    return '<div class="panel"><div class="panel-h">Logs serveur</div>'+l.map(function(x){return '<div class="logrow"><span class="t">'+when(x.created_at)+'</span><span class="tag log">'+esc(x.type||'')+'</span><span>'+esc(x.detail||'')+'</span></div>';}).join('')+'</div>';}
+
+  var body = sub==='bans'?bansHTML() : sub==='players'?playersHTML() : sub==='logs'?logsHTML() : headDash();
+  var topbtns='<div style="display:flex;gap:8px;margin-left:auto"><button class="btn btn-ghost btn-sm" onclick="serverView(\''+qesc(name)+'\',\''+sub+'\')">↻ Rafraîchir</button><button class="btn btn-ghost btn-sm" onclick="delServer(\''+qesc(name)+'\',event)">🗑 Supprimer</button></div>';
+  if(sub!=='dash'){
+    body='<div class="page-h" style="display:flex;align-items:flex-end;gap:12px"><div><h1>'+esc(SUBLBL[sub])+'</h1><p><span class="dot '+(on?'on':'off')+'"></span>'+esc(sv.name||name)+' — '+(on?'en ligne':'hors ligne')+'</p></div>'+topbtns+'</div>'+body;
+  }
+  app.innerHTML=body;
+  window.__srvkey=d.key||'';
+  var ksh=document.getElementById('kshow');
+  if(ksh){var shown=false;ksh.onclick=function(){shown=!shown;document.getElementById('keymask').textContent=shown?(d.key||'—'):('•'.repeat(28));ksh.textContent=shown?'Hide':'Show';};}
+}
+window.serverView=serverView;
+window.delServer=async function(name,ev){if(ev){ev.stopPropagation();ev.preventDefault();}if(!confirm('Supprimer "'+name+'" et toutes ses données ?'))return;var r=await api('delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});if(r.ok){OPEN=null;go('#/');}else alert(r.error||'Erreur');};
+
+/* ===== ROUTER ===== */
+function route(){
+  var h=location.hash;
+  var ms=h.match(/^#\/s\/([^\/]+)(?:\/(\w+))?/);
+  if(ms)return serverView(decodeURIComponent(ms[1]),ms[2]||'dash');
+  if(h==='#/redeem')return redeem();
+  if(h==='#/download')return download();
+  return home();
+}
+window.addEventListener('hashchange',route);
+route();
 </script>
 </body>
 </html>
