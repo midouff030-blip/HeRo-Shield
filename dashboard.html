@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — HeRo Shield</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a12;--panel:#0e1726;--panel2:#132033;--line:#1d2c42;--txt:#eaf1fb;--mut:#8699b4;--dim:#56678a;--cy:#1fe3c6;--blu:#5b9dff;--cysoft:rgba(31,227,198,.12);--amber:#ffbb3c;--red:#ff5169;--r:14px;--rs:10px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:15px;line-height:1.55;background:radial-gradient(800px 480px at 80% -10%,rgba(31,227,198,.08),transparent 60%),var(--bg);background-attachment:fixed}
+h1,h2,h3,h4{font-family:'Chakra Petch',sans-serif;margin:0;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+.nav{position:sticky;top:0;z-index:50;background:rgba(6,10,18,.76);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Chakra Petch';font-weight:700;font-size:18px}.logo svg{width:28px;height:28px}.logo b{color:var(--cy)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Chakra Petch';font-weight:600;font-size:14px;border:0;border-radius:var(--rs);padding:10px 17px;cursor:pointer;transition:.15s}
+.btn-primary{background:linear-gradient(135deg,var(--cy),var(--blu));color:#04231f}.btn-primary:hover{filter:brightness(1.07)}
+.btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}.btn-ghost:hover{border-color:var(--mut)}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13.5px}.chip img{width:26px;height:26px;border-radius:50%}
+.center{min-height:64vh;display:grid;place-items:center;text-align:center}
+.spin{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--cy);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto}@keyframes sp{to{transform:rotate(360deg)}}
+main{padding:32px 0 70px;min-height:70vh}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.srv{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:17px 19px;margin-bottom:12px;cursor:pointer;transition:.15s}
+.srv:hover{border-color:var(--cy);background:var(--panel2)}
+.srv .nm{font-family:'Chakra Petch';font-weight:600;font-size:16px}
+.srv .s{color:var(--mut);font-size:12.5px;margin-top:3px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.dot.on{background:var(--cy)}.dot.off{background:var(--dim)}
+.tabs{display:flex;gap:8px;margin:4px 0 18px;flex-wrap:wrap}
+.tab{font-family:'Chakra Petch';font-weight:600;font-size:13.5px;padding:8px 15px;border-radius:999px;border:1px solid var(--line);color:var(--mut);cursor:pointer}
+.tab.act{background:var(--cysoft);border-color:var(--cy);color:var(--cy)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:16px}
+.stat .n{font-family:'Chakra Petch';font-weight:700;font-size:25px}.stat .n.cy{color:var(--cy)}.stat .n.rd{color:var(--red)}
+.stat .l{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+th{font-family:'Chakra Petch';font-weight:600;color:var(--mut);font-size:12px}
+.tag{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:3px 8px;border-radius:999px}
+.tag.ban{background:rgba(255,81,105,.14);color:var(--red)}.tag.kick{background:rgba(255,187,60,.14);color:var(--amber)}.tag.log{background:rgba(91,157,255,.14);color:var(--blu)}
+.key{font-family:ui-monospace,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:2px 7px;font-size:11.5px;color:var(--cy)}
+.proof{width:120px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block}
+.empty{color:var(--mut);text-align:center;padding:28px}
+.back{color:var(--mut);font-family:'Chakra Petch';font-size:13.5px}.back:hover{color:var(--txt)}
+.logrow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.logrow .t{color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lv{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;place-items:center;z-index:90;cursor:zoom-out}.lv.on{display:grid}.lv img{max-width:92vw;max-height:92vh;border-radius:10px}
+@media(max-width:720px){.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="logo" href="/"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#g)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>HeRo<b>Shield</b></a>
+  <div id="navUser"></div>
+</div></nav>
+<main class="wrap" id="app"><div class="center"><div class="spin"></div></div></main>
+<div class="lv" id="lv" onclick="this.classList.remove('on')"><img id="lvimg" src=""></div>
+<script>
+var app=document.getElementById('app'),navUser=document.getElementById('navUser'),ME=null;
+function esc(s){return (s==null?'':s).toString().replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
+function loading(){app.innerHTML='<div class="center"><div class="spin"></div></div>';}
+function when(t){try{return new Date(t).toLocaleString('fr-FR');}catch(e){return t;}}
+function dur(s){s=Number(s)||0;var h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h>0?(h+'h '+m+'m'):(m+'m');}
+async function api(p){try{var r=await fetch('/api/'+p,{credentials:'same-origin'});if(r.status===401){ME=null;return{unauth:true};}return await r.json();}catch(e){return{neterr:true};}}
+var SHIELD='<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#gc)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gc" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>';
+function zoom(u){document.getElementById('lvimg').src=u;document.getElementById('lv').classList.add('on');}
+
+function loginView(){navUser.innerHTML='';app.innerHTML='<div class="center"><div><div style="width:54px;height:54px;margin:0 auto 16px">'+SHIELD+'</div><h1 style="font-size:28px">Dashboard HeRo Shield</h1><p style="color:var(--mut);margin:10px 0 22px">Connecte-toi avec Discord pour voir tes serveurs proteges.</p><a class="btn btn-primary" href="/api/auth-login">Se connecter avec Discord</a></div></div>';}
+function renderUser(){var av=ME.avatar?'https://cdn.discordapp.com/avatars/'+ME.id+'/'+ME.avatar+'.png?size=48':'https://cdn.discordapp.com/embed/avatars/0.png';navUser.innerHTML='<span class="chip"><img src="'+av+'"> '+esc(ME.username)+' &nbsp;<a class="btn btn-ghost" href="/api/logout">Deconnexion</a></span>';}
+
+async function home(){loading();var d=await api('me');if(d.unauth||d.neterr||!d.user)return loginView();ME=d.user;renderUser();
+var srv=d.servers||[];
+var cards=srv.map(function(s){var on=s.last_seen&&(Date.now()-new Date(s.last_seen).getTime()<180000);
+return '<div class="srv" onclick="location.hash=\'#/s/'+encodeURIComponent(s.name)+'\'"><div><div class="nm">'+esc(s.name||'Serveur')+'</div><div class="s"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(s.online||0)+'/'+(s.max||0)+' joueurs'):('hors ligne • vu '+when(s.last_seen)))+'</div></div><div class="btn btn-ghost">Ouvrir &rarr;</div></div>';}).join('');
+app.innerHTML='<div class="head"><div><h1 style="font-size:24px">Tes serveurs</h1><div style="color:var(--mut);font-size:14px;margin-top:4px">Serveurs proteges par HeRo Shield.</div></div></div>'+(cards||'<div class="panel empty">Aucun serveur pour l\'instant. Lance le resource avec le reporting active et il apparaitra ici.</div>');}
+
+var TAB='bans';
+async function serverView(name){loading();var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
+if(d.error){app.innerHTML='<div class="center"><div><p style="color:var(--red)">'+esc(d.error)+'</p><a class="back" href="#/">&larr; Retour</a></div></div>';return;}
+renderUser();var st=d.stats||{},sv=d.server||{};
+var on=sv.last_seen&&(Date.now()-new Date(sv.last_seen).getTime()<180000);
+var top=Object.keys(st.byType||{}).sort(function(a,b){return st.byType[b]-st.byType[a];})[0]||'—';
+
+function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel empty">Aucun ban. ✅</div>';
+ return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Raison</th><th>Detail</th><th>Preuve</th><th>Quand</th></tr></thead><tbody>'+
+ b.map(function(x){var img=x.screenshot?('<img class="proof" src="'+esc(x.screenshot)+'" onclick="zoom(\''+esc(x.screenshot)+'\')">'):'<span style="color:var(--dim)">—</span>';
+ return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut)">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim)">'+when(x.created_at)+'</td></tr>';}).join('')+
+ '</tbody></table></div></div>';}
+
+function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel empty">Aucune donnee joueur (active le heartbeat dans le resource).</div>';
+ return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Vu</th></tr></thead><tbody>'+
+ p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td>'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
+ '</tbody></table></div></div>';}
+
+function logsHTML(){var l=d.logs||[];if(!l.length)return '<div class="panel empty">Aucun log.</div>';
+ return '<div class="panel">'+l.map(function(x){return '<div class="logrow"><span class="t">'+when(x.created_at)+'</span><span class="tag log">'+esc(x.type||'')+'</span><span>'+esc(x.detail||'')+'</span></div>';}).join('')+'</div>';}
+
+function render(){
+ var body=TAB==='bans'?bansHTML():TAB==='players'?playersHTML():logsHTML();
+ app.innerHTML='<a class="back" href="#/">&larr; Serveurs</a><div class="head" style="margin-top:8px"><div><h1 style="font-size:24px">'+esc(sv.name||name)+'</h1><div style="color:var(--mut);font-size:13px;margin-top:4px"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(sv.online||0)+'/'+(sv.max||0)):'hors ligne')+'</div></div><button class="btn btn-ghost" onclick="serverView(\''+esc(name).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">Rafraichir</button></div>'+
+ '<div class="stats"><div class="stat"><div class="n rd">'+(st.bans||0)+'</div><div class="l">Bans/actions</div></div><div class="stat"><div class="n cy">'+(st.online||0)+'</div><div class="l">En ligne</div></div><div class="stat"><div class="n">'+(st.players||0)+'</div><div class="l">Joueurs connus</div></div><div class="stat"><div class="n">'+esc(top)+'</div><div class="l">Triche #1</div></div></div>'+
+ '<div class="tabs"><div class="tab '+(TAB==='bans'?'act':'')+'" onclick="setTab(\'bans\')">Bans &amp; preuves</div><div class="tab '+(TAB==='players'?'act':'')+'" onclick="setTab(\'players\')">Joueurs</div><div class="tab '+(TAB==='logs'?'act':'')+'" onclick="setTab(\'logs\')">Logs</div></div>'+body;
+}
+window.setTab=function(t){TAB=t;render();};
+window.serverView=serverView;window.zoom=zoom;
+render();}
+
+function route(){var m=location.hash.match(/^#\/s\/(.+)/);if(m)return serverView(decodeURIComponent(m[1]));return home();}
+window.addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
