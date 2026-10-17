@@ -1,1 +1,7 @@
-{ "name": "heroshield-web", "version": "1.0.0", "private": true, "engines": { "node": ">=18" } }
+{
+  "name": "heroshield-site",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" }
+}

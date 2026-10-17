@@ -1,27 +1,68 @@
-const { getSession, sb } = require("./_lib");
-// GET ?server=<name> -> server + bans + logs + players + stats (donnees du resource)
-module.exports = async (req, res) => {
-  const s = getSession(req);
-  if (!s) return res.status(401).json({ error: "non connecte" });
-  const name = req.query?.server;
-  if (!name) return res.status(400).json({ error: "server manquant" });
-  const enc = encodeURIComponent(name);
-  try {
-    const lic = await sb(`hs_licenses?server_name=eq.${enc}&owner_id=eq.${s.id}&select=key`);
-    if (!lic || !lic.length) return res.status(403).json({ error: "Serveur introuvable ou pas a toi." });
 
-    const [srv, bans, logs, players] = await Promise.all([
-      sb(`hs_servers?name=eq.${enc}&select=name,online,max,last_seen`),
-      sb(`hs_bans?server_name=eq.${enc}&select=type,player_name,identifier,reason,detail,ban_id,screenshot,created_at&order=created_at.desc&limit=60`),
-      sb(`hs_logs?server_name=eq.${enc}&select=type,detail,created_at&order=created_at.desc&limit=80`),
-      sb(`hs_players?server_name=eq.${enc}&select=name,identifier,playtime_sec,online,last_seen&order=playtime_sec.desc&limit=100`)
-    ]);
-    const server = (srv && srv[0]) || { name, online: 0, max: 0 };
-    const byType = {};
-    (bans || []).forEach(b => { byType[b.type] = (byType[b.type] || 0) + 1; });
-    res.status(200).json({
-      server, key: lic[0].key, bans: bans || [], logs: logs || [], players: players || [],
-      stats: { bans: (bans || []).length, logs: (logs || []).length, online: server.online || 0, players: (players || []).length, byType }
-    });
-  } catch (e) { res.status(500).json({ error: e.message }); }
+import { wrap, send, sb, enc, httpError, requireUser, requireOwnedServer } from './_lib.js';
+
+const count = async (path) => {
+  const rows = await sb(`${path}${path.includes('?') ? '&' : '?'}select=id`);
+  return (rows || []).length;
 };
+
+const search = (q, cols) => {
+  const s = String(q || '').replace(/[,()*%]/g, '').trim().slice(0, 50);
+  return s ? `&or=(${cols.map((c) => `${c}.ilike.*${enc(s)}*`).join(',')})` : '';
+};
+
+export default wrap(async (req, res) => {
+  const user = requireUser(req);
+  const server = await requireOwnedServer(user, req.query.server);
+  const sid = server.id;
+  const type = req.query.type || 'overview';
+
+  if (type === 'overview') {
+    const since = new Date(Date.now() - 7 * 86400000).toISOString();
+    const [detections, bans, players, online, recent, week] = await Promise.all([
+      count(`detections?server_id=eq.${sid}`),
+      count(`bans?server_id=eq.${sid}&active=eq.true`),
+      count(`players?server_id=eq.${sid}`),
+      count(`players?server_id=eq.${sid}&online=eq.true`),
+      sb(`detections?server_id=eq.${sid}&select=player,reason,action,info,created_at&order=created_at.desc&limit=8`),
+      sb(`detections?server_id=eq.${sid}&created_at=gte.${enc(since)}&select=reason,created_at&limit=5000`),
+    ]);
+    
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 86400000);
+      days.push({ day: d.toISOString().slice(0, 10), count: 0 });
+    }
+    const byReason = {};
+    for (const r of week || []) {
+      const day = days.find((d) => d.day === r.created_at.slice(0, 10));
+      if (day) day.count++;
+      byReason[r.reason] = (byReason[r.reason] || 0) + 1;
+    }
+    const top = Object.entries(byReason).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([reason, n]) => ({ reason, n }));
+    return send(res, 200, {
+      server: { id: sid, name: server.name, last_seen: server.last_seen },
+      stats: { detections, bans, players, online },
+      recent: recent || [],
+      days,
+      top,
+    });
+  }
+
+  if (type === 'detections') {
+    const rows = await sb(`detections?server_id=eq.${sid}${search(req.query.q, ['player', 'reason', 'identifier'])}&order=created_at.desc&limit=200`);
+    return send(res, 200, { rows: rows || [] });
+  }
+
+  if (type === 'bans') {
+    const rows = await sb(`bans?server_id=eq.${sid}${search(req.query.q, ['player', 'ban_id', 'reason', 'identifier'])}&order=created_at.desc&limit=200`);
+    return send(res, 200, { rows: rows || [] });
+  }
+
+  if (type === 'players') {
+    const rows = await sb(`players?server_id=eq.${sid}${search(req.query.q, ['player', 'identifier'])}&order=online.desc,last_seen.desc&limit=200`);
+    return send(res, 200, { rows: rows || [] });
+  }
+
+  throw httpError(400, 'Invalid type');
+});
