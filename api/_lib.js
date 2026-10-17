@@ -9,25 +9,40 @@ const env = (k) => {
 
 
 export async function sb(path, { method = 'GET', body, prefer } = {}) {
-  const key = env('SUPABASE_SERVICE_KEY');
+  const key = env('SUPABASE_SERVICE_KEY').trim();
+  const base = env('SUPABASE_URL').trim().replace(/\/+$/, '').replace(/\/rest\/v1$/, '');
   const headers = {
     apikey: key,
     Authorization: `Bearer ${key}`,
     'Content-Type': 'application/json',
   };
   if (prefer) headers.Prefer = prefer;
-  const r = await fetch(`${env('SUPABASE_URL').replace(/\/$/, '')}/rest/v1/${path}`, {
-    method,
-    headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+
+  let r;
+  try {
+    r = await fetch(`${base}/rest/v1/${path}`, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  } catch (e) {
+    console.error('Supabase fetch failed:', e);
+    throw httpError(502, 'Database unreachable: check SUPABASE_URL (https://xxxx.supabase.co)');
+  }
+
   const text = await r.text();
   let data = null;
   try { data = text ? JSON.parse(text) : null; } catch { data = text; }
   if (!r.ok) {
-    const err = new Error(`Supabase ${r.status}: ${typeof data === 'string' ? data : JSON.stringify(data)}`);
-    err.status = 502;
-    throw err;
+    console.error('Supabase error', r.status, text);
+    const msg = (data && (data.message || data.hint)) || String(text).slice(0, 150);
+    let hint = '';
+    if (r.status === 401 || r.status === 403 || /permission|JWT|Invalid API key/i.test(msg)) {
+      hint = ' -> use the service_role key in SUPABASE_SERVICE_KEY';
+    } else if (/does not exist|schema cache|relation/i.test(msg)) {
+      hint = ' -> run supabase.sql in the Supabase SQL Editor';
+    }
+    throw httpError(502, `Database error: ${msg}${hint}`);
   }
   return data;
 }
