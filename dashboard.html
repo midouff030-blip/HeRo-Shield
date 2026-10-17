@@ -75,16 +75,16 @@ var cards=srv.map(function(s){var on=s.last_seen&&(Date.now()-new Date(s.last_se
 return '<div class="srv" onclick="location.hash=\'#/s/'+encodeURIComponent(s.name)+'\'"><div><div class="nm">'+esc(s.name||'Serveur')+'</div><div class="s"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(s.online||0)+'/'+(s.max||0)+' joueurs'):('hors ligne • vu '+when(s.last_seen)))+'</div></div><div class="btn btn-ghost">Ouvrir &rarr;</div></div>';}).join('');
 app.innerHTML='<div class="head"><div><h1 style="font-size:24px">Tes serveurs</h1><div style="color:var(--mut);font-size:14px;margin-top:4px">Serveurs proteges par HeRo Shield.</div></div></div>'+
  (cards||'<div class="panel empty">Aucun serveur connecte pour l\'instant. Connecte-en un ci-dessous.</div>')+
- '<div class="panel"><h3 style="font-size:15px;margin-bottom:4px">Connecter un serveur</h3><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Entre le <b>code de connexion</b> de ton serveur FiveM (celui du lien <b>cfx.re/join/XXXXXX</b>). Le nom, les joueurs et l\'etat seront recuperes automatiquement.</div>'+
- '<div style="display:flex;gap:10px;flex-wrap:wrap"><input id="c_code" placeholder="Code de connexion (ex: yd8e3m)" style="flex:1;min-width:200px"><input id="c_name" placeholder="Nom affiche (optionnel)" style="flex:1;min-width:160px"><button class="btn btn-primary" id="c_btn">Connecter</button></div>'+
+ '<div class="panel"><h3 style="font-size:15px;margin-bottom:4px">+ Ajouter un serveur</h3><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Donne un nom a ton serveur. Tu recevras une <b>cle unique</b> a coller dans ton config.lua.</div>'+
+ '<div style="display:flex;gap:10px;flex-wrap:wrap"><input id="c_name" placeholder="Nom de ton serveur" style="flex:1;min-width:240px"><button class="btn btn-primary" id="c_btn">Creer la cle</button></div>'+
  '<div id="c_out" style="margin-top:12px"></div></div>';
 document.getElementById('c_btn').onclick=async function(){
-  var code=document.getElementById('c_code').value.trim(), name=document.getElementById('c_name').value.trim();
-  if(!code){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">Entre le code de connexion (cfx.re/join/XXXX).</span>';return;}
+  var name=document.getElementById('c_name').value.trim();
+  if(!name){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">Entre un nom de serveur.</span>';return;}
   this.textContent='...';this.disabled=true;
-  var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code:code,name:name})});
-  this.textContent='Connecter';this.disabled=false;
-  if(r.ok){document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600">✓ '+esc(r.name)+' connecte — '+(r.online||0)+'/'+(r.max||0)+' joueurs</div>';setTimeout(home,1500);}
+  var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});
+  this.textContent='Creer la cle';this.disabled=false;
+  if(r.ok){document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:8px">✓ '+esc(r.name)+' cree !</div><div style="color:var(--mut);font-size:13px">Colle ceci dans ton <b>config.lua</b> puis redemarre le resource :</div><pre style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:12.5px;color:var(--txt);margin-top:8px">Config.ReportingUrl   = "'+location.origin+'/api/ingest"\nConfig.ReportingToken = "'+esc(r.key)+'"\nConfig.LicenseUrl     = "'+location.origin+'/api/license/validate"</pre>';setTimeout(home,3500);}
   else{document.getElementById('c_out').innerHTML='<span style="color:var(--red)">'+esc(r.error||'Erreur')+'</span>';}
 };}
 
@@ -92,18 +92,7 @@ var TAB='bans';
 async function serverView(name){loading();var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
 if(d.error){app.innerHTML='<div class="center"><div><p style="color:var(--red)">'+esc(d.error)+'</p><a class="back" href="#/">&larr; Retour</a></div></div>';return;}
 renderUser();var st=d.stats||{},sv=d.server||{};
-// essai : etat live depuis le navigateur (si l'API serveur etait bloquee)
-if(d.code && !sv.live){try{
-  var cr=await fetch('https://servers-frontend.fivem.net/api/servers/single/'+d.code,{headers:{'Accept':'application/json'}});
-  if(cr.ok){var cj=await cr.json();var cd=cj&&cj.Data;if(cd){
-    sv.online=cd.clients!=null?cd.clients:(cd.players||[]).length;
-    sv.max=cd.svMaxclients||cd.sv_maxclients||(cd.vars&&(cd.vars.sv_maxClients||cd.vars.sv_maxclients))||sv.max;
-    sv.hostname=(cd.hostname||'').replace(/\^\d/g,'');sv.live=true;
-    d.players=(cd.players||[]).map(function(p){return {id:p.id,name:(p.name||'').replace(/\^\d/g,''),ping:p.ping};});
-    st.online=sv.online;st.players=d.players.length;
-  }}
-}catch(e){}}
-var on=sv.live||(sv.last_seen&&(Date.now()-new Date(sv.last_seen).getTime()<180000));
+var on=sv.last_seen&&(Date.now()-new Date(sv.last_seen).getTime()<180000);
 var top=Object.keys(st.byType||{}).sort(function(a,b){return st.byType[b]-st.byType[a];})[0]||'—';
 
 function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel empty">Aucun ban. ✅</div>';
@@ -112,9 +101,9 @@ function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel empt
  return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut)">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim)">'+when(x.created_at)+'</td></tr>';}).join('')+
  '</tbody></table></div></div>';}
 
-function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel empty">Aucun joueur en ligne (ou serveur hors ligne).</div>';
- return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Joueur</th><th>Ping</th><th>Statut</th></tr></thead><tbody>'+
- p.map(function(x){return '<tr><td style="color:var(--dim)">'+esc(x.id)+'</td><td><b>'+esc(x.name||'?')+'</b></td><td>'+(x.ping!=null?esc(x.ping)+' ms':'-')+'</td><td><span class="dot on"></span>en ligne</td></tr>';}).join('')+
+function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel empty">Aucun joueur enregistre pour l\'instant.</div>';
+ return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Vu</th></tr></thead><tbody>'+
+ p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td>'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
  '</tbody></table></div></div>';}
 
 function logsHTML(){var l=d.logs||[];if(!l.length)return '<div class="panel empty">Aucun log.</div>';

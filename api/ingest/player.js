@@ -1,11 +1,12 @@
-const { checkIngest, body, sb, touchServer } = require("../_lib");
-// POST /api/ingest/player  { serverName, identifier, name, online, add_sec }
+const { ingestLicense, body, sb, touchServer } = require("../_lib");
+// POST /api/ingest/player (header X-Ingest-Token = cle du serveur) { identifier, name, online, add_sec }
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "methode" });
-  if (!checkIngest(req)) return res.status(401).json({ error: "token invalide" });
+  const lic = await ingestLicense(req);
+  if (!lic) return res.status(401).json({ error: "cle invalide" });
   const b = body(req);
-  const id = b.identifier; const srv = b.serverName;
-  if (!id || !srv) return res.status(400).json({ error: "identifier/serverName" });
+  const id = b.identifier; const srv = lic.server_name;
+  if (!id) return res.status(400).json({ error: "identifier" });
   try {
     await touchServer(srv);
     let total = 0;

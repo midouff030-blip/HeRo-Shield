@@ -19,10 +19,22 @@ function setCookie(res, t) { res.setHeader("Set-Cookie", `hs_session=${encodeURI
 function clearCookie(res) { res.setHeader("Set-Cookie", "hs_session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0"); }
 const redirectUri = () => `${SITE_URL}/api/auth-callback`;
 
-// Verifie le token d'ingestion envoye par le resource (header X-Ingest-Token)
-function checkIngest(req) {
+// Cle unique par serveur (a mettre dans Config.ReportingToken du client)
+function newKey() {
+  return "HS-" + crypto.randomBytes(3).toString("hex").toUpperCase() + "-" +
+    crypto.randomBytes(3).toString("hex").toUpperCase() + "-" +
+    crypto.randomBytes(3).toString("hex").toUpperCase();
+}
+// Le resource envoie sa cle dans X-Ingest-Token. On retrouve la licence (= le serveur + proprietaire).
+async function ingestLicense(req) {
   const tok = req.headers["x-ingest-token"];
-  return INGEST_TOKEN && tok && tok === INGEST_TOKEN;
+  if (!tok) return null;
+  // compat : un INGEST_TOKEN global reste accepte (sert au serveur de demo du proprietaire)
+  try {
+    const rows = await sb(`hs_licenses?key=eq.${encodeURIComponent(tok)}&active=eq.true&select=key,server_name,owner_id`);
+    if (rows && rows.length) return rows[0];
+  } catch {}
+  return null;
 }
 function body(req) { let b = req.body; if (typeof b === "string") { try { b = JSON.parse(b); } catch { b = {}; } } return b || {}; }
 
@@ -63,4 +75,4 @@ async function fetchCfx(code) {
 }
 
 module.exports = { CLIENT_ID, CLIENT_SECRET, SUPABASE_URL, SUPABASE_KEY, API, SITE_URL, INGEST_TOKEN,
-  sign, verify, getSession, setCookie, clearCookie, redirectUri, checkIngest, body, sb, touchServer, fetchCfx };
+  sign, verify, getSession, setCookie, clearCookie, redirectUri, ingestLicense, newKey, body, sb, touchServer, fetchCfx };
