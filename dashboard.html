@@ -72,7 +72,7 @@ function renderUser(){var av=ME.avatar?'https://cdn.discordapp.com/avatars/'+ME.
 async function home(){loading();var d=await api('me');if(d.unauth||d.neterr||!d.user)return loginView();ME=d.user;renderUser();
 var srv=d.servers||[];
 var cards=srv.map(function(s){var on=s.last_seen&&(Date.now()-new Date(s.last_seen).getTime()<180000);
-return '<div class="srv" onclick="location.hash=\'#/s/'+encodeURIComponent(s.name)+'\'"><div><div class="nm">'+esc(s.name||'Serveur')+'</div><div class="s"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(s.online||0)+'/'+(s.max||0)+' joueurs'):('hors ligne • vu '+when(s.last_seen)))+'</div></div><div class="btn btn-ghost">Ouvrir &rarr;</div></div>';}).join('');
+return '<div class="srv" onclick="location.hash=\'#/s/'+encodeURIComponent(s.name)+'\'"><div><div class="nm">'+esc(s.name||'Serveur')+'</div><div class="s"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(s.online||0)+'/'+(s.max||0)+' joueurs'):('hors ligne • vu '+when(s.last_seen)))+'</div></div><div style="display:flex;gap:8px"><button class="btn btn-ghost" style="padding:8px 12px" title="Supprimer" onclick="delServer(\''+esc(s.name).replace(/'/g,"\\\\'")+'\',event)">🗑</button><div class="btn btn-ghost">Ouvrir &rarr;</div></div></div>';}).join('');
 app.innerHTML='<div class="head"><div><h1 style="font-size:24px">Tes serveurs</h1><div style="color:var(--mut);font-size:14px;margin-top:4px">Serveurs proteges par HeRo Shield.</div></div></div>'+
  (cards||'<div class="panel empty">Aucun serveur connecte pour l\'instant. Connecte-en un ci-dessous.</div>')+
  '<div class="panel"><h3 style="font-size:15px;margin-bottom:4px">+ Ajouter un serveur</h3><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Donne un nom a ton serveur. Tu recevras une <b>cle unique</b> a coller dans ton config.lua.</div>'+
@@ -84,9 +84,17 @@ document.getElementById('c_btn').onclick=async function(){
   this.textContent='...';this.disabled=true;
   var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});
   this.textContent='Creer la cle';this.disabled=false;
-  if(r.ok){document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:8px">✓ '+esc(r.name)+' cree !</div><div style="color:var(--mut);font-size:13px">Colle ceci dans ton <b>config.lua</b> puis redemarre le resource :</div><pre style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:12.5px;color:var(--txt);margin-top:8px">Config.ReportingUrl   = "'+location.origin+'/api/ingest"\nConfig.ReportingToken = "'+esc(r.key)+'"\nConfig.LicenseUrl     = "'+location.origin+'/api/license/validate"</pre>';setTimeout(home,3500);}
+  if(r.ok){var snip='Config.ReportingUrl   = "'+location.origin+'/api/ingest"\nConfig.ReportingToken = "'+r.key+'"\nConfig.LicenseUrl     = "'+location.origin+'/api/license/validate"';
+    window.__snip=snip;window.__key=r.key;
+    document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:10px">✓ '+esc(r.name)+' cree ! Garde bien ta cle.</div>'+
+    '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="key" style="font-size:14px;padding:6px 12px">'+esc(r.key)+'</span><button class="btn btn-ghost" onclick="cp(window.__key,this)">Copier la cle</button></div>'+
+    '<div style="color:var(--mut);font-size:13px">Colle ceci dans ton <b>config.lua</b> puis redemarre le resource :</div>'+
+    '<pre style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:12.5px;color:var(--txt);margin-top:8px">'+esc(snip)+'</pre>'+
+    '<div style="display:flex;gap:10px;margin-top:8px"><button class="btn btn-primary" onclick="cp(window.__snip,this)">Copier la config</button><button class="btn btn-ghost" onclick="home()">Voir mes serveurs</button></div>';}
   else{document.getElementById('c_out').innerHTML='<span style="color:var(--red)">'+esc(r.error||'Erreur')+'</span>';}
 };}
+window.cp=function(txt,btn){try{navigator.clipboard.writeText(txt);var o=btn.textContent;btn.textContent='Copie ✓';setTimeout(function(){btn.textContent=o;},1400);}catch(e){}};
+window.delServer=async function(name,ev){ev.stopPropagation();ev.preventDefault();if(!confirm('Supprimer "'+name+'" et toutes ses donnees ?'))return;var r=await api('delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});if(r.ok)home();else alert(r.error||'Erreur');};
 
 var TAB='bans';
 async function serverView(name){loading();var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
