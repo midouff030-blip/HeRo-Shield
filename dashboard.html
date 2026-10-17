@@ -62,7 +62,7 @@ function esc(s){return (s==null?'':s).toString().replace(/[&<>"]/g,function(c){r
 function loading(){app.innerHTML='<div class="center"><div class="spin"></div></div>';}
 function when(t){try{return new Date(t).toLocaleString('fr-FR');}catch(e){return t;}}
 function dur(s){s=Number(s)||0;var h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h>0?(h+'h '+m+'m'):(m+'m');}
-async function api(p){try{var r=await fetch('/api/'+p,{credentials:'same-origin'});if(r.status===401){ME=null;return{unauth:true};}return await r.json();}catch(e){return{neterr:true};}}
+async function api(p,o){try{var r=await fetch('/api/'+p,{credentials:'same-origin',...(o||{})});if(r.status===401){ME=null;return{unauth:true};}return await r.json();}catch(e){return{neterr:true};}}
 var SHIELD='<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#gc)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gc" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>';
 function zoom(u){document.getElementById('lvimg').src=u;document.getElementById('lv').classList.add('on');}
 
@@ -73,7 +73,20 @@ async function home(){loading();var d=await api('me');if(d.unauth||d.neterr||!d.
 var srv=d.servers||[];
 var cards=srv.map(function(s){var on=s.last_seen&&(Date.now()-new Date(s.last_seen).getTime()<180000);
 return '<div class="srv" onclick="location.hash=\'#/s/'+encodeURIComponent(s.name)+'\'"><div><div class="nm">'+esc(s.name||'Serveur')+'</div><div class="s"><span class="dot '+(on?'on':'off')+'"></span>'+(on?('en ligne • '+(s.online||0)+'/'+(s.max||0)+' joueurs'):('hors ligne • vu '+when(s.last_seen)))+'</div></div><div class="btn btn-ghost">Ouvrir &rarr;</div></div>';}).join('');
-app.innerHTML='<div class="head"><div><h1 style="font-size:24px">Tes serveurs</h1><div style="color:var(--mut);font-size:14px;margin-top:4px">Serveurs proteges par HeRo Shield.</div></div></div>'+(cards||'<div class="panel empty">Aucun serveur pour l\'instant. Lance le resource avec le reporting active et il apparaitra ici.</div>');}
+app.innerHTML='<div class="head"><div><h1 style="font-size:24px">Tes serveurs</h1><div style="color:var(--mut);font-size:14px;margin-top:4px">Serveurs proteges par HeRo Shield.</div></div></div>'+
+ (cards||'<div class="panel empty">Aucun serveur connecte pour l\'instant. Connecte-en un ci-dessous.</div>')+
+ '<div class="panel"><h3 style="font-size:15px;margin-bottom:4px">Connecter un serveur</h3><div style="color:var(--mut);font-size:13px;margin-bottom:12px">Entre le <b>code de connexion</b> de ton serveur FiveM (celui du lien <b>cfx.re/join/XXXXXX</b>). Le nom, les joueurs et l\'etat seront recuperes automatiquement.</div>'+
+ '<div style="display:flex;gap:10px;flex-wrap:wrap"><input id="c_code" placeholder="Code de connexion (ex: yd8e3m)" style="flex:1;min-width:200px"><input id="c_name" placeholder="Nom affiche (optionnel)" style="flex:1;min-width:160px"><button class="btn btn-primary" id="c_btn">Connecter</button></div>'+
+ '<div id="c_out" style="margin-top:12px"></div></div>';
+document.getElementById('c_btn').onclick=async function(){
+  var code=document.getElementById('c_code').value.trim(), name=document.getElementById('c_name').value.trim();
+  if(!code){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">Entre le code de connexion (cfx.re/join/XXXX).</span>';return;}
+  this.textContent='...';this.disabled=true;
+  var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code:code,name:name})});
+  this.textContent='Connecter';this.disabled=false;
+  if(r.ok){document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600">✓ '+esc(r.name)+' connecte — '+(r.online||0)+'/'+(r.max||0)+' joueurs</div>';setTimeout(home,1500);}
+  else{document.getElementById('c_out').innerHTML='<span style="color:var(--red)">'+esc(r.error||'Erreur')+'</span>';}
+};}
 
 var TAB='bans';
 async function serverView(name){loading();var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
@@ -88,9 +101,9 @@ function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel empt
  return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut)">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim)">'+when(x.created_at)+'</td></tr>';}).join('')+
  '</tbody></table></div></div>';}
 
-function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel empty">Aucune donnee joueur (active le heartbeat dans le resource).</div>';
- return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Vu</th></tr></thead><tbody>'+
- p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td>'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
+function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel empty">Aucun joueur en ligne (ou serveur hors ligne).</div>';
+ return '<div class="panel"><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Joueur</th><th>Ping</th><th>Statut</th></tr></thead><tbody>'+
+ p.map(function(x){return '<tr><td style="color:var(--dim)">'+esc(x.id)+'</td><td><b>'+esc(x.name||'?')+'</b></td><td>'+(x.ping!=null?esc(x.ping)+' ms':'-')+'</td><td><span class="dot on"></span>en ligne</td></tr>';}).join('')+
  '</tbody></table></div></div>';}
 
 function logsHTML(){var l=d.logs||[];if(!l.length)return '<div class="panel empty">Aucun log.</div>';

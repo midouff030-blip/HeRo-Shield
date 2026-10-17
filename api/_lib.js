@@ -39,5 +39,28 @@ async function touchServer(name, extra = {}) {
     body: JSON.stringify({ name, last_seen: new Date().toISOString(), ...extra }) }).catch(() => {});
 }
 
+// Recupere l'etat live d'un serveur FiveM via son code de connexion (cfx.re/join/CODE)
+async function fetchCfx(code) {
+  code = (code || "").toString().trim().replace(/^.*\/join\//, "").replace(/[^a-z0-9]/gi, "");
+  if (!code) return null;
+  try {
+    const r = await fetch(`https://servers-frontend.fivem.net/api/servers/single/${code}`, {
+      headers: { "User-Agent": "CitizenFX/1.0", "accept": "application/json" }
+    });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const d = j && j.Data; if (!d) return null;
+    const clean = (s) => (s || "").toString().replace(/\^\d/g, "").trim();
+    const players = (d.players || []).map(p => ({ name: clean(p.name), ping: p.ping, id: p.id }));
+    return {
+      code,
+      hostname: clean(d.hostname),
+      online: d.clients != null ? d.clients : players.length,
+      max: d.svMaxclients || d.sv_maxclients || (d.vars && (d.vars.sv_maxClients || d.vars.sv_maxclients)) || 0,
+      players
+    };
+  } catch { return null; }
+}
+
 module.exports = { CLIENT_ID, CLIENT_SECRET, SUPABASE_URL, SUPABASE_KEY, API, SITE_URL, INGEST_TOKEN,
-  sign, verify, getSession, setCookie, clearCookie, redirectUri, checkIngest, body, sb, touchServer };
+  sign, verify, getSession, setCookie, clearCookie, redirectUri, checkIngest, body, sb, touchServer, fetchCfx };
