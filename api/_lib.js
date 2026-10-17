@@ -49,6 +49,40 @@ export async function sb(path, { method = 'GET', body, prefer } = {}) {
 
 export const enc = encodeURIComponent;
 
+// ---------- Supabase Storage (bucket "proofs") ----------
+const storageBase = () => env('SUPABASE_URL').trim().replace(/\/+$/, '').replace(/\/rest\/v1$/, '');
+
+export function publicUrl(path) {
+  return `${storageBase()}/storage/v1/object/public/proofs/${path}`;
+}
+
+export async function storageUpload(path, buffer, contentType = 'image/jpeg') {
+  const key = env('SUPABASE_SERVICE_KEY').trim();
+  const r = await fetch(`${storageBase()}/storage/v1/object/proofs/${path}`, {
+    method: 'POST',
+    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': contentType, 'x-upsert': 'true', 'Cache-Control': 'no-cache' },
+    body: buffer,
+  });
+  if (!r.ok) {
+    const text = await r.text();
+    console.error('Storage error', r.status, text);
+    throw httpError(502, `Storage error: ${text.slice(0, 120)} -> run supabase.sql (creates the "proofs" bucket)`);
+  }
+  return publicUrl(path);
+}
+
+export async function storageList(prefix) {
+  const key = env('SUPABASE_SERVICE_KEY').trim();
+  const r = await fetch(`${storageBase()}/storage/v1/object/list/proofs`, {
+    method: 'POST',
+    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prefix, limit: 200, sortBy: { column: 'name', order: 'asc' } }),
+  });
+  if (!r.ok) return [];
+  const rows = await r.json();
+  return (rows || []).filter((o) => o.name && o.id).map((o) => o.name);
+}
+
 
 const COOKIE = 'hs_session';
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 days

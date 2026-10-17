@@ -9,6 +9,9 @@ Vercel + Supabase. No build step, no dependencies.
 - `api/` - backend (Vercel functions)
 - `supabase.sql` - database
 
+## Updating
+Run `supabase.sql` again after each update (safe, it keeps your data).
+
 ## Setup
 1. **Supabase**: new project → SQL Editor → paste `supabase.sql` → Run.
    Copy the Project URL and the `service_role` key (Settings → API).

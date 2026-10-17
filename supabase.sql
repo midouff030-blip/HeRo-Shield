@@ -57,6 +57,34 @@ create table if not exists players (
 );
 create index if not exists players_server_idx on players(server_id, last_seen desc);
 
+create table if not exists logs (
+  id          bigserial primary key,
+  server_id   uuid not null references servers(id) on delete cascade,
+  category    text,
+  title       text,
+  message     text,
+  player      text,
+  identifier  text,
+  created_at  timestamptz not null default now()
+);
+create index if not exists logs_server_idx on logs(server_id, created_at desc);
+alter table logs enable row level security;
+
+create table if not exists commands (
+  id          bigserial primary key,
+  server_id   uuid not null references servers(id) on delete cascade,
+  type        text not null,
+  target      text not null,
+  reason      text,
+  created_at  timestamptz not null default now()
+);
+create index if not exists commands_server_idx on commands(server_id, created_at);
+alter table commands enable row level security;
+
+-- Storage for proof screenshots (public links)
+insert into storage.buckets (id, name, public) values ('proofs', 'proofs', true)
+on conflict (id) do nothing;
+
 -- Only the API (service_role) can access the data
 alter table servers    enable row level security;
 alter table detections enable row level security;

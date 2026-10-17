@@ -30,7 +30,7 @@ async function getHandler(route) {
 function readBody(req) {
   return new Promise((resolve) => {
     let data = '';
-    req.on('data', (c) => { data += c; if (data.length > 1e6) req.destroy(); });
+    req.on('data', (c) => { data += c; if (data.length > 6e6) req.destroy(); });
     req.on('end', () => {
       if (!data) return resolve({});
       try { resolve(JSON.parse(data)); } catch { resolve(data); }

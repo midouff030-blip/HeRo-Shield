@@ -3,11 +3,11 @@
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => document.querySelectorAll(s);
 
-  const state = { user: null, servers: [], server: null, tab: 'overview', q: '' };
+  const state = { user: null, servers: [], server: null, tab: 'overview', q: '', cat: '' };
   try { state.server = localStorage.getItem('hs_server'); } catch {}
 
   const TITLES = {
-    overview: 'Overview', detections: 'Detections', bans: 'Bans', players: 'Players',
+    overview: 'Overview', detections: 'Detections', bans: 'Bans', players: 'Players', logs: 'Logs',
     settings: 'Settings', servers: 'My servers',
   };
   const ERRORS = {
@@ -32,6 +32,14 @@
     { name: 'EntitySpam', desc: 'Entities per 10 seconds', enabled: true, action: 'kick', value: 30, min: 5, max: 500 },
     { name: 'BlacklistedEntity', desc: 'Forbidden vehicles / props', enabled: true, action: 'ban' },
     { name: 'WeaponDamage', desc: 'Max damage per hit', enabled: true, action: 'log', value: 300, min: 50, max: 5000 },
+  ];
+
+  const LOGS = [
+    { name: 'Startup', desc: 'Anti-cheat started' }, { name: 'ResourceStart', desc: 'Resource started' },
+    { name: 'ResourceStop', desc: 'Resource stopped' }, { name: 'Join', desc: 'Player joined' },
+    { name: 'Leave', desc: 'Player left' }, { name: 'Death', desc: 'Deaths and kills' },
+    { name: 'Revive', desc: 'Player revived' }, { name: 'Weapon', desc: 'New weapons' },
+    { name: 'Explosion', desc: 'Every explosion (spam)', off: true }, { name: 'Admin', desc: 'Admin actions' },
   ];
 
   // ---------- utils ----------
@@ -147,7 +155,8 @@
     state.tab = tab;
     state.q = '';
     $('#search').value = '';
-    $('#search').hidden = !['detections', 'bans', 'players'].includes(tab);
+    state.cat = '';
+    $('#search').hidden = !['detections', 'bans', 'players', 'logs'].includes(tab);
     $('#server-select').style.display = tab === 'servers' ? 'none' : '';
     $('#page-title').textContent = TITLES[tab];
     $$('[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
@@ -168,6 +177,7 @@
     try {
       if (state.tab === 'overview') await renderOverview(view);
       else if (state.tab === 'settings') await renderSettings(view);
+      else if (state.tab === 'logs') await renderLogs(view);
       else await renderTable(view, state.tab);
     } catch (e) {
       view.innerHTML = `<div class="card empty">${esc(e.message)}</div>`;
@@ -235,15 +245,38 @@
         <td>${esc(r.reason)}<div class="mono">${esc(r.info)}</div></td>
         <td><span class="badge ${r.active ? 'ban' : 'off'}">${r.active ? 'Active' : r.unban_pending ? 'Unbanning' : 'Removed'}</span></td>
         <td class="mono">${fmtDate(r.created_at)}</td>
-        <td>${r.active ? `<button class="btn btn-ghost btn-sm" data-unban="${esc(r.ban_id)}">Unban</button>` : ''}</td></tr>`).join('');
+        <td><div class="actions-cell">
+          <button class="btn btn-ghost btn-sm" data-proof="${esc(r.ban_id)}" data-name="${esc(r.player)}">Proof</button>
+          ${r.active ? `<button class="btn btn-ghost btn-sm" data-unban="${esc(r.ban_id)}">Unban</button>` : ''}
+        </div></td></tr>`).join('');
     } else {
-      head = '<th>Player</th><th>Status</th><th>Playtime</th><th>Sessions</th><th>Last seen</th>';
+      head = '<th>Player</th><th>Status</th><th>Playtime</th><th>Sessions</th><th>Last seen</th><th></th>';
       body = rows.map((r) => `<tr>
         <td>${esc(r.player)}<div class="mono">${esc(r.identifier)}</div></td>
         <td><span class="badge ${r.online ? 'on' : 'off'}">${r.online ? 'Online' : 'Offline'}</span></td>
-        <td>${fmtTime(r.playtime)}</td><td>${fmtNum(r.sessions)}</td><td class="mono">${fmtDate(r.last_seen)}</td></tr>`).join('');
+        <td>${fmtTime(r.playtime)}</td><td>${fmtNum(r.sessions)}</td><td class="mono">${fmtDate(r.last_seen)}</td>
+        <td>${r.online ? `<div class="actions-cell">
+          <button class="btn btn-primary btn-sm" data-live="${esc(r.identifier)}" data-name="${esc(r.player)}">● Live</button>
+          <button class="btn btn-ghost btn-sm" data-act="kick" data-id="${esc(r.identifier)}" data-name="${esc(r.player)}">Kick</button>
+          <button class="btn btn-danger btn-sm" data-act="ban" data-id="${esc(r.identifier)}" data-name="${esc(r.player)}">Ban</button>
+        </div>` : ''}</td></tr>`).join('');
     }
     view.innerHTML = `<div class="card panel"><div class="table-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+  }
+
+  async function renderLogs(view) {
+    const { rows } = await api(`/api/data?server=${state.server}&type=logs&cat=${state.cat}&q=${encodeURIComponent(state.q)}`);
+    const chips = [{ name: '', label: 'All' }, ...LOGS.map((l) => ({ name: l.name, label: l.name }))]
+      .map((c) => `<button class="chip-btn ${state.cat === c.name ? 'active' : ''}" data-cat="${c.name}">${c.label}</button>`).join('');
+    view.innerHTML = `<div class="chips-bar">${chips}</div>
+      <div class="card panel">${rows.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Type</th><th>Event</th><th>Player</th><th>Date</th></tr></thead>
+        <tbody>${rows.map((r) => `<tr>
+          <td><span class="cat cat-${esc(r.category)}">${esc(r.category)}</span></td>
+          <td>${esc(r.title)}<div class="mono">${esc(r.message)}</div></td>
+          <td>${esc(r.player) || '-'}<div class="mono">${esc(r.identifier)}</div></td>
+          <td class="mono">${fmtDate(r.created_at)}</td></tr>`).join('')}</tbody></table></div>`
+        : '<div class="empty">No logs yet.</div>'}</div>`;
   }
 
   async function renderSettings(view) {
@@ -269,6 +302,16 @@
         <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Bans, kicks and logs are sent here. Leave empty to use the one in config.lua.</p>
         <input id="webhook" class="input" style="width:100%" placeholder="https://discord.com/api/webhooks/..." value="${esc(settings?.webhook || '')}">
       </div>
+      <div class="card panel" style="margin-bottom:18px">
+        <h3>Logs</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Logs webhook (empty = same as above).</p>
+        <input id="log-webhook" class="input" style="width:100%;margin-bottom:16px" placeholder="https://discord.com/api/webhooks/..." value="${esc(settings?.logWebhook || '')}">
+        <div class="log-toggles">${LOGS.map((l) => {
+          const on = settings?.logs?.[l.name] ?? !l.off;
+          return `<div class="card log-toggle"><div><b>${l.name}</b><small style="display:block;color:var(--dim);font-size:12px">${l.desc}</small></div>
+            <label class="switch"><input type="checkbox" data-log="${l.name}" ${on ? 'checked' : ''}><span></span></label></div>`;
+        }).join('')}</div>
+      </div>
       <div class="card panel">
         <h3>Detections <button class="btn btn-ghost btn-sm" data-reset>Reset to default</button></h3>
         <div class="set-row set-head" style="padding-top:0"><span>Name</span><span>Action</span><span>Limit</span><span>On</span></div>
@@ -289,7 +332,9 @@
       if (v) item.value = Number(v.value);
       detections[row.dataset.det] = item;
     });
-    return { webhook: $('#webhook').value.trim(), detections };
+    const logs = {};
+    $$('[data-log]').forEach((el) => { logs[el.dataset.log] = el.checked; });
+    return { webhook: $('#webhook').value.trim(), logWebhook: $('#log-webhook').value.trim(), logs, detections };
   }
 
   function renderServers(view) {
@@ -322,12 +367,121 @@
       </div>`;
   }
 
+  // ---------- viewer (live view + proof replay) ----------
+  const viewer = { timer: null, play: null, frames: [], index: 0 };
+
+  function openViewer(title, sub) {
+    closeViewer(true);
+    viewer.frames = [];
+    viewer.index = 0;
+    $('#viewer-title').textContent = title;
+    $('#viewer-sub').textContent = sub || '';
+    $('#viewer-img').className = '';
+    $('#viewer-img').removeAttribute('src');
+    $('#viewer-empty').textContent = 'Loading...';
+    $('#viewer-badge').textContent = '';
+    $('#viewer-badge').className = 'viewer-badge';
+    $('#viewer-controls').innerHTML = '';
+    $('#viewer').classList.add('open');
+  }
+
+  function closeViewer(keepOpen) {
+    clearInterval(viewer.timer); viewer.timer = null;
+    clearInterval(viewer.play); viewer.play = null;
+    if (!keepOpen) $('#viewer').classList.remove('open');
+  }
+
+  function showImage(url) {
+    const img = $('#viewer-img');
+    img.onload = () => { img.className = 'on'; $('#viewer-empty').textContent = ''; };
+    img.onerror = () => {};
+    img.src = url;
+  }
+
+  async function startLive(identifier, name) {
+    openViewer(`Live view - ${name}`, 'A new screenshot every 3 seconds. Needs screenshot-basic on your server.');
+    $('#viewer-badge').textContent = '● LIVE';
+    $('#viewer-badge').className = 'viewer-badge live';
+    $('#viewer-empty').textContent = 'Waiting for the player screen... (can take ~10s)';
+    const tick = async () => {
+      try {
+        const { liveUrl } = await api('/api/command', { method: 'POST', body: { server: state.server, type: 'screenshot', identifier } });
+        setTimeout(() => { if (viewer.timer) showImage(`${liveUrl}?t=${Date.now()}`); }, 2500);
+      } catch (e) { $('#viewer-empty').textContent = e.message; }
+    };
+    viewer.timer = setInterval(tick, 3000);
+    tick();
+  }
+
+  function setFrame(i) {
+    viewer.index = Math.max(0, Math.min(viewer.frames.length - 1, i));
+    const f = viewer.frames[viewer.index];
+    showImage(f.url);
+    $('#viewer-badge').textContent = f.label;
+    const range = $('#replay-range');
+    if (range) range.value = viewer.index;
+    const t = $('#replay-time');
+    if (t) t.textContent = f.time;
+    $$('.thumbs img').forEach((el, n) => el.classList.toggle('active', n === viewer.index));
+  }
+
+  async function openProof(banId, name) {
+    openViewer(`Proof - ${banId}`, name);
+    try {
+      const { ban, replay } = await api(`/api/proof?server=${state.server}&banId=${encodeURIComponent(banId)}`);
+      const step = 10;
+      viewer.frames = replay.map((url, i) => ({ url, label: 'REPLAY', time: `-${Math.floor(((replay.length - i) * step) / 60)}:${String(((replay.length - i) * step) % 60).padStart(2, '0')}` }));
+      if (ban) viewer.frames.push({ url: ban, label: 'BAN MOMENT', time: '0:00' });
+      if (!viewer.frames.length) {
+        $('#viewer-empty').textContent = 'No proof for this ban. Proof needs screenshot-basic on your server.';
+        return;
+      }
+      $('#viewer-controls').innerHTML = `
+        <button class="btn btn-ghost btn-sm" data-rp="prev">◀</button>
+        <button class="btn btn-primary btn-sm" data-rp="play">▶ Play</button>
+        <button class="btn btn-ghost btn-sm" data-rp="next">▶</button>
+        <input id="replay-range" type="range" min="0" max="${viewer.frames.length - 1}" value="0">
+        <span id="replay-time" class="time"></span>
+        <div class="thumbs" style="width:100%">${viewer.frames.map((f) => `<img src="${esc(f.url)}" alt="" loading="lazy">`).join('')}</div>`;
+      $('#replay-range').oninput = (e) => setFrame(Number(e.target.value));
+      $$('.thumbs img').forEach((el, n) => { el.onclick = () => setFrame(n); });
+      setFrame(ban ? viewer.frames.length - 1 : 0);
+    } catch (e) {
+      $('#viewer-empty').textContent = e.message;
+    }
+  }
+
+  function replayControl(action, btn) {
+    if (action === 'prev') return setFrame(viewer.index - 1);
+    if (action === 'next') return setFrame(viewer.index + 1);
+    if (viewer.play) {
+      clearInterval(viewer.play); viewer.play = null;
+      btn.textContent = '▶ Play';
+      return;
+    }
+    if (viewer.index >= viewer.frames.length - 1) setFrame(0);
+    btn.textContent = '❚❚ Pause';
+    viewer.play = setInterval(() => {
+      if (viewer.index >= viewer.frames.length - 1) {
+        clearInterval(viewer.play); viewer.play = null;
+        btn.textContent = '▶ Play';
+        return;
+      }
+      setFrame(viewer.index + 1);
+    }, 800);
+  }
+
   // ---------- events ----------
   document.addEventListener('click', async (e) => {
     const t = e.target.closest('button, [data-go]');
     if (!t) return;
 
     if (t.dataset.tab) return go(t.dataset.tab);
+    if (t.dataset.cat !== undefined) { state.cat = t.dataset.cat; return render(); }
+    if (t.dataset.closeViewer !== undefined) return closeViewer();
+    if (t.dataset.rp) return replayControl(t.dataset.rp, t);
+    if (t.dataset.live) return startLive(t.dataset.live, t.dataset.name);
+    if (t.dataset.proof) return openProof(t.dataset.proof, t.dataset.name);
     if (t.dataset.go) return go(t.dataset.go);
 
     if (t.dataset.show !== undefined) {
@@ -393,6 +547,16 @@
         await api('/api/unban', { method: 'POST', body: { server: state.server, banId: t.dataset.unban } });
         toast('Player unbanned');
         render();
+      } else if (t.dataset.act) {
+        const action = t.dataset.act;
+        const reason = await modal({
+          title: `${action === 'ban' ? 'Ban' : 'Kick'} ${t.dataset.name}?`,
+          text: 'Reason (shown to the player). Admins cannot be punished.',
+          input: true, value: action === 'ban' ? 'Cheating' : 'Kicked by staff', ok: action === 'ban' ? 'Ban' : 'Kick', danger: true,
+        });
+        if (!reason) return;
+        await api('/api/command', { method: 'POST', body: { server: state.server, type: action, identifier: t.dataset.id, reason } });
+        toast(`${action === 'ban' ? 'Ban' : 'Kick'} sent - done in a few seconds`);
       } else if (t.id === 'refresh') {
         await loadServers();
         render();
@@ -416,6 +580,13 @@
   });
 
   $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') $('#modal-cancel').click(); });
+  $('#viewer').addEventListener('click', (e) => { if (e.target.id === 'viewer') closeViewer(); });
+  document.addEventListener('keydown', (e) => {
+    if (!$('#viewer').classList.contains('open')) return;
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowLeft' && viewer.frames.length) setFrame(viewer.index - 1);
+    if (e.key === 'ArrowRight' && viewer.frames.length) setFrame(viewer.index + 1);
+  });
 
   setInterval(() => { if (!$('#app').hidden && state.tab === 'overview' && !document.hidden) render(); }, 30000);
 

@@ -9,13 +9,19 @@ const DETECTIONS = {
   BlacklistedEntity: null, WeaponDamage: [50, 5000],
 };
 const ACTIONS = ['ban', 'kick', 'log'];
+const LOGS = ['Startup', 'ResourceStart', 'ResourceStop', 'Join', 'Leave', 'Death', 'Revive', 'Weapon', 'Explosion', 'Admin'];
 const WEBHOOK = /^https:\/\/(discord\.com|discordapp\.com|ptb\.discord\.com|canary\.discord\.com)\/api\/webhooks\/\d+\/[\w-]+$/;
 
 function clean(input) {
-  const out = { webhook: '', detections: {} };
-  const webhook = String(input?.webhook || '').trim();
-  if (webhook && !WEBHOOK.test(webhook)) throw httpError(400, 'Invalid Discord webhook URL');
-  out.webhook = webhook;
+  const out = { webhook: '', logWebhook: '', logs: {}, detections: {} };
+  for (const key of ['webhook', 'logWebhook']) {
+    const url = String(input?.[key] || '').trim();
+    if (url && !WEBHOOK.test(url)) throw httpError(400, 'Invalid Discord webhook URL');
+    out[key] = url;
+  }
+  for (const name of LOGS) {
+    if (typeof input?.logs?.[name] === 'boolean') out.logs[name] = input.logs[name];
+  }
 
   for (const [name, range] of Object.entries(DETECTIONS)) {
     const d = input?.detections?.[name];

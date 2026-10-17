@@ -381,6 +381,46 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
   .set-row > div:first-child { grid-column: 1 / -1; }
   .set-head { display: none !important; }
 }
+
+/* logs */
+.chips-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip-btn { padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid var(--line-strong); color: var(--muted); }
+.chip-btn:hover { color: var(--text); }
+.chip-btn.active { background: var(--grad); color: #04101f; border-color: transparent; }
+.cat { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; background: rgba(255,255,255,.06); color: var(--muted); }
+.cat-Startup, .cat-Revive { background: rgba(16,185,129,.12); color: var(--green); }
+.cat-ResourceStart, .cat-Join { background: rgba(34,211,238,.12); color: var(--cyan); }
+.cat-ResourceStop, .cat-Death { background: rgba(244,63,94,.12); color: var(--red); }
+.cat-Weapon, .cat-Explosion { background: rgba(245,158,11,.12); color: var(--orange); }
+.cat-Admin { background: rgba(139,92,246,.14); color: var(--violet); }
+.log-toggles { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.log-toggle { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; }
+.log-toggle b { font-size: 14px; font-weight: 600; }
+@media (max-width: 820px) {
+  .mobile-tabs { overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+  .mobile-tabs::-webkit-scrollbar { display: none; }
+  .mobile-tabs button { flex: 0 0 auto; min-width: 64px; }
+}
+
+/* viewer */
+.viewer { width: min(980px, 100%); padding: 20px; }
+.viewer-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.viewer-head h3 { font-family: var(--display); font-size: 18px; }
+.viewer-head p { color: var(--muted); font-size: 13px; }
+.viewer-screen { position: relative; aspect-ratio: 16 / 9; background: #03050b; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: grid; place-items: center; }
+.viewer-screen img { width: 100%; height: 100%; object-fit: contain; display: none; }
+.viewer-screen img.on { display: block; }
+.viewer-empty { color: var(--dim); font-size: 14px; text-align: center; padding: 20px; }
+.viewer-badge { position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: rgba(0,0,0,.65); }
+.viewer-badge:empty { display: none; }
+.viewer-badge.live { color: #fff; background: var(--red); }
+.viewer-controls { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+.viewer-controls input[type=range] { flex: 1; min-width: 160px; accent-color: var(--cyan); }
+.viewer-controls .time { font-family: ui-monospace, Consolas, monospace; font-size: 13px; color: var(--muted); min-width: 92px; text-align: right; }
+.thumbs { display: flex; gap: 6px; overflow-x: auto; margin-top: 12px; padding-bottom: 4px; }
+.thumbs img { width: 96px; height: 54px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: .6; flex: 0 0 auto; }
+.thumbs img.active { border-color: var(--cyan); opacity: 1; }
+.actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -399,6 +439,7 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
     <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m5.6 5.6 12.8 12.8" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M16 4a4 4 0 0 1 0 8M22 21c0-3-1.5-5-4-5.7"/></g></symbol>
     <symbol id="i-server" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></g></symbol>
+    <symbol id="i-logs" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></g></symbol>
     <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></g></symbol>
     <symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.5 19.5 0 0 0-4.9 1.4C.6 9.1-.3 13.6.2 18.1A19.8 19.8 0 0 0 6.2 21l1.3-2.1a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 12 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.7 19.7 0 0 0 6-3c.6-5.2-.9-9.7-3.5-13.6ZM8.5 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm7 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></symbol>
   </defs>
@@ -424,6 +465,7 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
     <button class="side-link" data-tab="detections"><svg><use href="#i-alert"/></svg>Detections</button>
     <button class="side-link" data-tab="bans"><svg><use href="#i-ban"/></svg>Bans</button>
     <button class="side-link" data-tab="players"><svg><use href="#i-users"/></svg>Players</button>
+    <button class="side-link" data-tab="logs"><svg><use href="#i-logs"/></svg>Logs</button>
     <button class="side-link" data-tab="settings"><svg><use href="#i-gear"/></svg>Settings</button>
     <div class="side-label">Account</div>
     <button class="side-link" data-tab="servers"><svg><use href="#i-server"/></svg>My servers</button>
@@ -451,6 +493,7 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
     <button data-tab="detections"><svg><use href="#i-alert"/></svg>Alerts</button>
     <button data-tab="bans"><svg><use href="#i-ban"/></svg>Bans</button>
     <button data-tab="players"><svg><use href="#i-users"/></svg>Players</button>
+    <button data-tab="logs"><svg><use href="#i-logs"/></svg>Logs</button>
     <button data-tab="settings"><svg><use href="#i-gear"/></svg>Settings</button>
     <button data-tab="servers"><svg><use href="#i-server"/></svg>Servers</button>
   </nav>
@@ -466,6 +509,17 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
       <button id="modal-cancel" class="btn btn-ghost btn-sm">Cancel</button>
       <button id="modal-ok" class="btn btn-primary btn-sm">OK</button>
     </div>
+  </div>
+</div>
+<!-- viewer: live view + proof replay -->
+<div id="viewer" class="modal-bg">
+  <div class="card viewer">
+    <div class="viewer-head">
+      <div><h3 id="viewer-title"></h3><p id="viewer-sub"></p></div>
+      <button class="btn btn-ghost btn-sm" data-close-viewer>✕</button>
+    </div>
+    <div class="viewer-screen"><img id="viewer-img" alt=""><div id="viewer-empty" class="viewer-empty"></div><span id="viewer-badge" class="viewer-badge"></span></div>
+    <div id="viewer-controls" class="viewer-controls"></div>
   </div>
 </div>
 <div id="toast" class="toast"></div>

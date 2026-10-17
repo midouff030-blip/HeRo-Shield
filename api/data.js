@@ -59,6 +59,12 @@ export default wrap(async (req, res) => {
     return send(res, 200, { rows: rows || [] });
   }
 
+  if (type === 'logs') {
+    const cat = String(req.query.cat || '').replace(/[^A-Za-z]/g, '').slice(0, 20);
+    const rows = await sb(`logs?server_id=eq.${sid}${cat ? `&category=eq.${cat}` : ''}${search(req.query.q, ['player', 'title', 'message', 'identifier'])}&order=created_at.desc&limit=300`);
+    return send(res, 200, { rows: rows || [] });
+  }
+
   if (type === 'players') {
     const rows = await sb(`players?server_id=eq.${sid}${search(req.query.q, ['player', 'identifier'])}&order=online.desc,last_seen.desc&limit=200`);
     return send(res, 200, { rows: rows || [] });
