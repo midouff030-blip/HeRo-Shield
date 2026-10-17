@@ -17,3 +17,10 @@ Vercel + Supabase. No build step, no dependencies.
 3. **Vercel**: import this folder → Settings → Environment Variables (see `.env.example`) → Redeploy.
 
 Never put the `service_role` key in the website files. It is only used in `api/`.
+
+## Render (instead of Vercel)
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Instance: Free
+- Same environment variables. `DISCORD_REDIRECT_URI` = `https://YOUR-APP.onrender.com/api/auth/callback`
+- In the FiveM `shared/config.lua`: `Config.DashboardURL = 'https://YOUR-APP.onrender.com/api'`
