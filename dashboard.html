@@ -4,156 +4,218 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Customer Area — HeRo Shield</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#070b12;--side:#0b111c;--panel:#0e1726;--panel2:#13203300;--card:#101a2b;--line:#1b2840;--line2:#243consts;--line2:#22324e;--txt:#eaf1fb;--mut:#8699b4;--dim:#56678a;--cy:#1fe3c6;--blu:#5b9dff;--cysoft:rgba(31,227,198,.12);--blusoft:rgba(91,157,255,.12);--amber:#ffbb3c;--red:#ff5169;--grn:#36d399;--r:14px;--rs:10px}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14.5px;line-height:1.55}
-h1,h2,h3,h4{font-family:'Chakra Petch',sans-serif;margin:0;letter-spacing:-.01em}
+:root{--bg:#050910;--side:#090f1a;--panel:#0c1422;--card:#0f1a2d;--card2:#111d32;--line:#172036;--line2:#1f2d4a;--txt:#e8eef8;--txt2:#f0f5ff;--mut:#7a8faf;--dim:#4e6080;--cy:#00e8b8;--cy2:#20f5d0;--cyg:rgba(0,232,184,.08);--cyg2:rgba(0,232,184,.14);--blu:#4d94ff;--blug:rgba(77,148,255,.10);--amber:#ffc23a;--red:#ff4d6a;--redg:rgba(255,77,106,.10);--grn:#2dd4a0;--grng:rgba(45,212,160,.12);--purp:#a78bfa;--r:16px;--rs:10px;--glow:0 0 60px -20px rgba(0,232,184,.25)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Chakra Petch',sans-serif;letter-spacing:-.02em;font-weight:700}
 a{color:inherit;text-decoration:none}
-input{font-family:inherit;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--rs);color:var(--txt);padding:11px 13px;outline:none}
-input:focus{border-color:var(--cy)}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Chakra Petch';font-weight:600;font-size:13.5px;border:0;border-radius:var(--rs);padding:10px 16px;cursor:pointer;transition:.15s;white-space:nowrap}
-.btn-primary{background:linear-gradient(135deg,var(--cy),var(--blu));color:#04231f}.btn-primary:hover{filter:brightness(1.07)}
-.btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}.btn-ghost:hover{border-color:var(--mut)}
-.btn-sm{padding:6px 11px;font-size:12.5px}
+input,select,textarea{font-family:inherit;font-size:13.5px;background:var(--panel);border:1px solid var(--line);border-radius:var(--rs);color:var(--txt);padding:10px 13px;outline:none;transition:.15s}
+input:focus,select:focus{border-color:var(--cy);box-shadow:0 0 0 3px var(--cyg)}
+::selection{background:var(--cy);color:var(--bg)}
 
-/* ===== LAYOUT ===== */
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Chakra Petch';font-weight:600;font-size:13px;border:0;border-radius:var(--rs);padding:9px 16px;cursor:pointer;transition:.18s;white-space:nowrap;letter-spacing:.01em}
+.btn-cy{background:var(--cy);color:#021a14;box-shadow:0 4px 20px -6px rgba(0,232,184,.4)}.btn-cy:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-grad{background:linear-gradient(135deg,var(--cy),var(--blu));color:#021a14;box-shadow:0 6px 24px -8px rgba(0,232,184,.35)}.btn-grad:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}.btn-ghost:hover{border-color:var(--mut);background:var(--panel)}
+.btn-red{background:var(--redg);color:var(--red);border:1px solid transparent}.btn-red:hover{border-color:var(--red)}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn svg{width:15px;height:15px}
+
+/* ===== SHELL ===== */
 .shell{display:flex;min-height:100vh}
-.side{width:262px;flex-shrink:0;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.side-top{padding:18px 18px 14px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}
-.side-top svg{width:34px;height:34px;flex-shrink:0}
-.side-top .tt{font-family:'Chakra Petch';font-weight:700;font-size:15.5px;line-height:1.15}
-.side-top .tt b{color:var(--cy)}
-.side-top .sub{color:var(--dim);font-size:11.5px;margin-top:1px}
-.nav-sec{padding:14px 12px 4px;color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;font-family:'Chakra Petch';font-weight:600}
-.nav{display:flex;flex-direction:column;gap:2px;padding:0 10px}
-.nav a,.nav button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:0;border:0;color:var(--mut);font-family:Inter;font-size:14px;padding:9px 11px;border-radius:9px;cursor:pointer;transition:.12s}
-.nav a:hover,.nav button:hover{background:var(--panel);color:var(--txt)}
-.nav a.act,.nav button.act{background:var(--cysoft);color:var(--cy)}
-.nav .ic{width:17px;height:17px;flex-shrink:0;opacity:.9}
-.srvlist{padding:4px 10px 10px;display:flex;flex-direction:column;gap:2px;flex:1}
-.srvbtn{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:0;border:0;color:var(--mut);font-size:13.5px;padding:8px 11px;border-radius:9px;cursor:pointer;transition:.12s;font-family:Inter}
-.srvbtn:hover{background:var(--panel);color:var(--txt)}
-.srvbtn.act{background:var(--panel);color:var(--txt)}
+
+/* ===== SIDEBAR ===== */
+.side{width:260px;flex-shrink:0;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;z-index:30}
+.side::-webkit-scrollbar{width:4px}.side::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+
+.side-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.side-logo svg{width:36px;height:36px;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(0,232,184,.3))}
+.side-logo .nm{font-family:'Chakra Petch';font-weight:700;font-size:16px;line-height:1.15}
+.side-logo .nm b{color:var(--cy)}
+.side-logo .sub{color:var(--dim);font-size:11px;margin-top:2px;letter-spacing:.03em}
+
+.nav-label{padding:16px 16px 6px;color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-family:'Chakra Petch';font-weight:600}
+.nav{display:flex;flex-direction:column;gap:1px;padding:0 8px}
+.nav a,.nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:0;border:0;color:var(--mut);font-family:Inter;font-size:13.5px;font-weight:500;padding:9px 12px;border-radius:10px;cursor:pointer;transition:.12s}
+.nav a:hover,.nav button:hover{background:rgba(255,255,255,.04);color:var(--txt)}
+.nav a.act,.nav button.act{background:var(--cyg2);color:var(--cy)}
+.nav .ic{width:18px;height:18px;flex-shrink:0;opacity:.8}
+.nav a.act .ic,.nav button.act .ic{opacity:1}
+.nav .badge-n{margin-left:auto;background:var(--cyg);color:var(--cy);font-size:10px;font-family:'Chakra Petch';font-weight:700;padding:2px 7px;border-radius:999px}
+
+/* server list */
+.srvlist{padding:2px 8px 8px;display:flex;flex-direction:column;gap:1px;flex:1}
+.srvbtn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:0;border:0;color:var(--mut);font-size:13px;font-weight:500;padding:8px 12px;border-radius:10px;cursor:pointer;transition:.12s;font-family:Inter}
+.srvbtn:hover{background:rgba(255,255,255,.04);color:var(--txt)}
+.srvbtn.act{background:rgba(255,255,255,.05);color:var(--txt)}
 .srvbtn .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.srvbtn .car{transition:.15s;color:var(--dim);font-size:11px}
-.srvbtn.open .car{transform:rotate(90deg)}
-.subnav{display:none;flex-direction:column;gap:1px;margin:2px 0 6px 13px;padding-left:9px;border-left:1px solid var(--line)}
+.srvbtn .arr{transition:.2s;color:var(--dim);font-size:10px;opacity:.7}
+.srvbtn.open .arr{transform:rotate(90deg);color:var(--cy)}
+.subnav{display:none;flex-direction:column;gap:0;margin:2px 0 4px 14px;padding-left:10px;border-left:2px solid var(--line)}
 .subnav.open{display:flex}
-.subnav button{display:flex;align-items:center;gap:9px;background:0;border:0;color:var(--dim);font-size:13px;padding:7px 10px;border-radius:8px;cursor:pointer;font-family:Inter;text-align:left;width:100%}
-.subnav button:hover{background:var(--panel);color:var(--txt)}
-.subnav button.act{color:var(--cy);background:var(--cysoft)}
-.side-bot{border-top:1px solid var(--line);padding:8px 10px 12px;display:flex;flex-direction:column;gap:2px}
+.subnav button{display:flex;align-items:center;gap:8px;background:0;border:0;color:var(--dim);font-size:12.5px;font-weight:500;padding:6px 10px;border-radius:8px;cursor:pointer;font-family:Inter;text-align:left;width:100%;transition:.12s}
+.subnav button:hover{background:rgba(255,255,255,.04);color:var(--txt)}
+.subnav button.act{color:var(--cy);background:var(--cyg)}
 
-.main{flex:1;min-width:0}
-.topbar{height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 24px;position:sticky;top:0;background:rgba(7,11,18,.82);backdrop-filter:blur(12px);z-index:20}
-.crumb{color:var(--dim);font-size:13.5px;font-family:'Chakra Petch'}
+.side-bot{margin-top:auto;border-top:1px solid var(--line);padding:8px}
+
+/* ===== MAIN ===== */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:52px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 24px;position:sticky;top:0;background:rgba(5,9,16,.88);backdrop-filter:blur(16px);z-index:20}
+.crumb{color:var(--dim);font-size:13px;font-family:'Chakra Petch';font-weight:500}
 .crumb b{color:var(--txt);font-weight:600}
+.crumb span{color:var(--dim)}
 .topbar .sp{flex:1}
-.chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mut)}.chip img{width:26px;height:26px;border-radius:50%}
-.content{padding:26px 28px 70px;max-width:1240px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)}.chip img{width:26px;height:26px;border-radius:50%;border:2px solid var(--line)}
+.content{padding:24px 26px 60px;max-width:1280px;flex:1}
 
-.page-h{margin-bottom:22px}
-.page-h h1{font-size:23px}
-.page-h p{color:var(--mut);font-size:13.5px;margin:5px 0 0}
+.page-h{margin-bottom:20px}
+.page-h h1{font-size:22px;font-weight:700}
+.page-h p{color:var(--mut);font-size:13px;margin:4px 0 0}
 
 /* banner */
-.banner{height:118px;border-radius:var(--r);background:linear-gradient(100deg,#0d1a2e,#122a44);border:1px solid var(--line);margin-bottom:16px;overflow:hidden;position:relative;display:flex;align-items:center;padding:0 26px}
-.banner:after{content:"";position:absolute;inset:0;background:radial-gradient(500px 200px at 85% 50%,rgba(31,227,198,.18),transparent 70%)}
-.banner .bsvg{width:66px;height:66px;opacity:.9;position:relative}
+.banner{height:100px;border-radius:var(--r);background:linear-gradient(110deg,#0a1628 0%,#0f2240 50%,#0a1628 100%);border:1px solid var(--line);margin-bottom:16px;overflow:hidden;position:relative;display:flex;align-items:center;padding:0 28px;gap:16px}
+.banner:after{content:"";position:absolute;inset:0;background:radial-gradient(450px 180px at 90% 50%,rgba(0,232,184,.12),transparent 70%);pointer-events:none}
+.banner:before{content:"";position:absolute;inset:0;background:radial-gradient(300px 150px at 10% 50%,rgba(77,148,255,.08),transparent 60%);pointer-events:none}
+.banner .bsvg{width:52px;height:52px;position:relative;filter:drop-shadow(0 4px 16px rgba(0,232,184,.3))}
+.banner .btxt{position:relative}
+.banner .btxt h2{font-size:18px;margin-bottom:2px}
+.banner .btxt p{color:var(--mut);font-size:12.5px}
 
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px}
-.card .ch{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:12.5px;margin-bottom:12px;font-family:'Chakra Petch';font-weight:600}
-.card .ch .ci{width:16px;height:16px;opacity:.85}
-.card .big{font-family:'Chakra Petch';font-weight:700;font-size:21px;line-height:1.1}
-.card .small{color:var(--dim);font-size:12px;margin-top:3px}
-.badge{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:4px 10px;border-radius:999px;margin-left:auto}
-.badge.on{background:rgba(54,211,153,.15);color:var(--grn)}
-.badge.off{background:rgba(255,81,105,.14);color:var(--red)}
-.badge.free{background:var(--cysoft);color:var(--cy)}
-.keymask{font-family:ui-monospace,monospace;font-size:13px;letter-spacing:1px;color:var(--mut);word-break:break-all}
-.row-btns{display:flex;gap:7px;margin-top:11px}
+/* cards grid */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;transition:.2s}
+.card:hover{border-color:var(--line2)}
+.card .ch{display:flex;align-items:center;gap:7px;color:var(--mut);font-size:11.5px;margin-bottom:10px;font-family:'Chakra Petch';font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.card .ch .ci{width:15px;height:15px;opacity:.7}
+.card .big{font-family:'Chakra Petch';font-weight:700;font-size:20px;line-height:1.1;color:var(--txt2)}
+.card .small{color:var(--dim);font-size:11.5px;margin-top:4px}
+.badge{font-family:'Chakra Petch';font-weight:600;font-size:10.5px;padding:3px 9px;border-radius:999px;letter-spacing:.02em}
+.badge.on{background:var(--grng);color:var(--grn)}.badge.off{background:var(--redg);color:var(--red)}.badge.free{background:var(--cyg);color:var(--cy)}
+.keymask{font-family:ui-monospace,SFMono-Regular,monospace;font-size:13px;letter-spacing:1.5px;color:var(--dim);word-break:break-all}
+.row-btns{display:flex;gap:6px;margin-top:10px}
 
+/* analytics */
 .analytics{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
 .analytics .ah{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.analytics .ah h3{font-size:15.5px}.analytics .ah p{color:var(--mut);font-size:12.5px;margin:3px 0 0}
-.seg{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:3px}
-.seg button{background:0;border:0;color:var(--mut);font-size:12.5px;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Chakra Petch';font-weight:600}
-.seg button.act{background:var(--cysoft);color:var(--cy)}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.metric .ml{color:var(--dim);font-size:12px;margin-bottom:4px}
-.metric .mv{font-family:'Chakra Petch';font-weight:700;font-size:26px}
-.metric .mv.cy{color:var(--cy)}.metric .mv.rd{color:var(--red)}
-.chart-empty{text-align:center;color:var(--mut);padding:40px 0 10px}
-.chart-empty svg{width:40px;height:40px;opacity:.4;margin-bottom:10px}
+.analytics .ah h3{font-size:15px}.analytics .ah p{color:var(--mut);font-size:12px;margin:3px 0 0}
+.seg{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{background:0;border:0;color:var(--dim);font-size:11.5px;padding:5px 12px;border-radius:7px;cursor:pointer;font-family:'Chakra Petch';font-weight:600;transition:.12s}
+.seg button:hover{color:var(--mut)}
+.seg button.act{background:var(--cyg2);color:var(--cy)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.metric .ml{color:var(--dim);font-size:11px;margin-bottom:5px;font-family:'Chakra Petch';font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.metric .mv{font-family:'Chakra Petch';font-weight:700;font-size:28px}
+.metric .mv.cy{color:var(--cy)}.metric .mv.rd{color:var(--red)}.metric .mv.blu{color:var(--blu)}.metric .mv.purp{color:var(--purp)}
 
-/* tables */
+/* tables / panels */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:0;margin-bottom:14px;overflow:hidden}
-.panel-h{padding:15px 18px;border-bottom:1px solid var(--line);font-family:'Chakra Petch';font-weight:600;font-size:15px;display:flex;align-items:center;gap:9px}
+.panel-h{padding:14px 18px;border-bottom:1px solid var(--line);font-family:'Chakra Petch';font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.panel-h .cnt{margin-left:auto;background:var(--cyg);color:var(--cy);font-size:10.5px;padding:2px 8px;border-radius:999px}
 table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+th,td{text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);font-size:12.5px;vertical-align:top}
 tr:last-child td{border-bottom:0}
-th{font-family:'Chakra Petch';font-weight:600;color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
-.tag{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:3px 9px;border-radius:999px}
-.tag.ban{background:rgba(255,81,105,.14);color:var(--red)}.tag.kick{background:rgba(255,187,60,.14);color:var(--amber)}.tag.log{background:rgba(91,157,255,.14);color:var(--blu)}
-.key{font-family:ui-monospace,monospace;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:2px 7px;font-size:11px;color:var(--cy)}
-.proof{width:108px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block}
-.empty{color:var(--mut);text-align:center;padding:34px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}.dot.on{background:var(--grn)}.dot.off{background:var(--dim)}
-.logrow{display:flex;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);font-size:13px}
+tr:hover td{background:rgba(255,255,255,.015)}
+th{font-family:'Chakra Petch';font-weight:600;color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;background:var(--panel)}
+.tag{font-family:'Chakra Petch';font-weight:600;font-size:10.5px;padding:3px 8px;border-radius:999px}
+.tag.ban{background:var(--redg);color:var(--red)}.tag.kick{background:rgba(255,194,58,.12);color:var(--amber)}.tag.log{background:var(--blug);color:var(--blu)}
+.key{font-family:ui-monospace,monospace;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:10.5px;color:var(--cy)}
+.proof{width:100px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block;transition:.15s}
+.proof:hover{border-color:var(--cy)}
+.empty{color:var(--dim);text-align:center;padding:36px 20px;font-size:13px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.dot.on{background:var(--grn);box-shadow:0 0 8px var(--grn)}.dot.off{background:var(--dim)}
+
+.logrow{display:flex;gap:12px;padding:9px 18px;border-bottom:1px solid var(--line);font-size:12.5px;align-items:center}
 .logrow:last-child{border-bottom:0}
-.logrow .t{color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.logrow:hover{background:rgba(255,255,255,.015)}
+.logrow .t{color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:11.5px;font-family:ui-monospace,monospace}
 
-/* download */
-.dl-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:16px}
-.dl-box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
-.dl-circle{width:150px;height:150px;margin:18px auto;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;position:relative;transition:.15s;background:radial-gradient(120px 120px at 50% 40%,rgba(31,227,198,.08),transparent)}
-.dl-circle:hover{border-color:var(--cy);transform:translateY(-2px)}
-.dl-circle:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--line);opacity:.5}
-.dl-circle svg{width:38px;height:38px;color:var(--cy)}
-.dl-circle span{position:absolute;bottom:34px;font-family:'Chakra Petch';font-weight:600;font-size:13px;color:var(--cy)}
-.step{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+/* download page */
+.dl-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:14px}
+.dl-box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px}
+.dl-circle{width:140px;height:140px;margin:20px auto;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;cursor:pointer;position:relative;transition:.2s;background:radial-gradient(110px at 50% 40%,var(--cyg),transparent)}
+.dl-circle:hover{border-color:var(--cy);transform:translateY(-3px);box-shadow:var(--glow)}
+.dl-circle:before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--line);opacity:.4}
+.dl-circle svg{width:36px;height:36px;color:var(--cy)}
+.dl-circle span{position:absolute;bottom:30px;font-family:'Chakra Petch';font-weight:600;font-size:12.5px;color:var(--cy)}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
 .step:last-child{border-bottom:0}
-.step .num{width:26px;height:26px;border-radius:50%;background:var(--cysoft);color:var(--cy);display:grid;place-items:center;font-family:'Chakra Petch';font-weight:700;font-size:12.5px;flex-shrink:0}
-.step .st{font-family:'Chakra Petch';font-weight:600;font-size:14px;margin-bottom:5px}
-.step .sd{color:var(--mut);font-size:13px}
-pre{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;overflow-x:auto;font-size:12.5px;color:var(--txt);margin:8px 0 0;font-family:ui-monospace,monospace}
+.step .num{width:28px;height:28px;border-radius:50%;background:var(--cyg2);color:var(--cy);display:grid;place-items:center;font-family:'Chakra Petch';font-weight:700;font-size:12px;flex-shrink:0}
+.step .st{font-family:'Chakra Petch';font-weight:600;font-size:13.5px;margin-bottom:4px}
+.step .sd{color:var(--mut);font-size:12.5px}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px;overflow-x:auto;font-size:12px;color:var(--cy);margin:6px 0 0;font-family:ui-monospace,monospace}
 
-/* generic */
-.center{min-height:70vh;display:grid;place-items:center;text-align:center}
-.spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--cy);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto}@keyframes sp{to{transform:rotate(360deg)}}
-.lv{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;place-items:center;z-index:90;cursor:zoom-out}.lv.on{display:grid}.lv img{max-width:92vw;max-height:92vh;border-radius:10px}
-.copied{color:var(--grn);font-size:12.5px}
-.hamb{display:none;background:0;border:0;color:var(--txt);cursor:pointer}
+/* config page */
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cfg-section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
+.cfg-section h3{font-size:14.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.cfg-section h3 svg{width:18px;height:18px;color:var(--cy);opacity:.8}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);gap:12px}
+.cfg-row:last-child{border-bottom:0}
+.cfg-row .lbl{font-size:13px;font-weight:500}
+.cfg-row .lbl small{display:block;color:var(--dim);font-size:11px;font-weight:400;margin-top:1px}
+.cfg-row .val{font-family:'Chakra Petch';font-weight:600;font-size:13px;color:var(--cy);text-align:right;white-space:nowrap}
+.cfg-row .val.red{color:var(--red)}.cfg-row .val.amber{color:var(--amber)}.cfg-row .val.grn{color:var(--grn)}
+.toggle{width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;cursor:default;flex-shrink:0}
+.toggle.on{background:var(--cy)}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.15s}
+.toggle.on::after{left:19px}
+.det-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.det-row:last-child{border-bottom:0}
+.det-row .nm{flex:1;font-weight:500}
+.det-row .act{font-family:'Chakra Petch';font-weight:600;font-size:11px;padding:3px 8px;border-radius:999px}
+.det-row .act.ban{background:var(--redg);color:var(--red)}.det-row .act.kick{background:rgba(255,194,58,.12);color:var(--amber)}.det-row .act.log{background:var(--blug);color:var(--blu)}
+
+/* login */
+.center{min-height:80vh;display:grid;place-items:center;text-align:center}
+.login-box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:48px 44px;max-width:420px;width:100%;box-shadow:var(--glow)}
+.login-box h1{font-size:24px;margin:18px 0 8px}
+.login-box p{color:var(--mut);font-size:13.5px;margin-bottom:24px}
+.btn-discord{background:#5865F2;color:#fff;font-size:14px;padding:12px 24px;width:100%}
+.btn-discord:hover{background:#4752c4}
+.btn-discord svg{width:20px;height:20px}
+
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--cy);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lv{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;place-items:center;z-index:90;cursor:zoom-out;backdrop-filter:blur(6px)}.lv.on{display:grid}.lv img{max-width:92vw;max-height:92vh;border-radius:10px}
+.hamb{display:none;background:0;border:0;color:var(--txt);cursor:pointer;padding:4px}
+
 @media(max-width:920px){
-  .side{position:fixed;left:-280px;z-index:60;transition:.2s}.side.open{left:0}
-  .hamb{display:block}.cards,.metrics{grid-template-columns:1fr 1fr}.dl-grid{grid-template-columns:1fr}
-  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;display:none}.scrim.on{display:block}
+  .side{position:fixed;left:-270px;z-index:60;transition:.25s ease}.side.open{left:0}
+  .hamb{display:block}.cards,.metrics,.cfg-grid{grid-template-columns:1fr 1fr}.dl-grid{grid-template-columns:1fr}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55;display:none;backdrop-filter:blur(2px)}.scrim.on{display:block}
 }
-@media(max-width:560px){.cards,.metrics{grid-template-columns:1fr}}
+@media(max-width:560px){.cards,.metrics,.cfg-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="shell">
   <aside class="side" id="side">
-    <div class="side-top">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#g)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>
-      <div><div class="tt">HeRo <b>Shield</b></div><div class="sub">Customer Area</div></div>
+    <div class="side-logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#g)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#021a14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="g" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#00e8b8"/><stop offset="1" stop-color="#4d94ff"/></linearGradient></defs></svg>
+      <div><div class="nm">HeRo <b>Shield</b></div><div class="sub">Customer Area</div></div>
     </div>
-    <div class="nav-sec">Menu</div>
+
+    <div class="nav-label">Menu</div>
     <div class="nav">
-      <button data-nav="home" onclick="go('#/')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
-      <button data-nav="redeem" onclick="go('#/redeem')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.3L12 15.3 7.2 17l.9-5.3L4.2 7.7l5.4-.8z"/></svg>Redeem</button>
-      <button data-nav="download" onclick="go('#/download')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>Download</button>
+      <button data-nav="home" onclick="go('#/')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</button>
+      <button data-nav="redeem" onclick="go('#/redeem')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 5H3v14h18V5z"/><path d="M3 10h18"/></svg>Redeem</button>
+      <button data-nav="download" onclick="go('#/download')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>Download</button>
+      <button data-nav="cfglib" onclick="go('#/config')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Configuration</button>
     </div>
-    <div class="nav-sec">My Servers</div>
-    <div class="srvlist" id="srvlist"><div style="padding:10px 11px;color:var(--dim);font-size:12.5px">Chargement…</div></div>
+
+    <div class="nav-label">My Servers</div>
+    <div class="srvlist" id="srvlist"><div style="padding:10px 12px;color:var(--dim);font-size:12px">Chargement…</div></div>
+
     <div class="side-bot">
       <div class="nav">
-        <a href="https://discord.gg/" target="_blank"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4.4A17 17 0 0015.6 3l-.3.5a12 12 0 013.7 1.9 15.8 15.8 0 00-13.9 0A12 12 0 018.7 3.5L8.4 3A17 17 0 004 4.4 18 18 0 001 16.9a17 17 0 005.2 2.6l.4-.6a11 11 0 01-1.8-.9l.4-.3a12 12 0 0010.3 0l.4.3a11 11 0 01-1.8.9l.4.6A17 17 0 0023 16.9 18 18 0 0020 4.4zM9.3 14.5c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7zm5.4 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7z"/></svg>Support</a>
-        <a href="#/download" onclick="go('#/download')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Documentation</a>
+        <a href="https://discord.gg/" target="_blank"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4.4A17 17 0 0015.6 3l-.3.5a12 12 0 013.7 1.9 15.8 15.8 0 00-13.9 0A12 12 0 018.7 3.5L8.4 3A17 17 0 004 4.4 18 18 0 001 16.9a17 17 0 005.2 2.6l.4-.6a11 11 0 01-1.8-.9l.4-.3a12 12 0 0010.3 0l.4.3a11 11 0 01-1.8.9l.4.6A17 17 0 0023 16.9 18 18 0 0020 4.4zM9.3 14.5c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7zm5.4 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7z"/></svg>Support Discord</a>
+        <a href="/" target="_blank"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Site web</a>
       </div>
     </div>
   </aside>
@@ -161,8 +223,8 @@ pre{background:var(--panel);border:1px solid var(--line);border-radius:9px;paddi
 
   <div class="main">
     <div class="topbar">
-      <button class="hamb" onclick="toggleSide(1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-      <div class="crumb" id="crumb">Dashboard</div>
+      <button class="hamb" onclick="toggleSide(1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="crumb" id="crumb"><b>Dashboard</b></div>
       <div class="sp"></div>
       <div id="navUser"></div>
     </div>
@@ -173,148 +235,233 @@ pre{background:var(--panel);border:1px solid var(--line);border-radius:9px;paddi
 
 <script>
 var app=document.getElementById('app'),navUser=document.getElementById('navUser'),crumb=document.getElementById('crumb'),srvlist=document.getElementById('srvlist');
-var ME=null, SERVERS=[], OPEN=null; // OPEN = nom du serveur deplie dans le sidebar
-function esc(s){return (s==null?'':s).toString().replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
+var ME=null,SERVERS=[],OPEN=null;
+function esc(s){return(s==null?'':s).toString().replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
 function qesc(s){return esc(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 function loading(){app.innerHTML='<div class="center"><div class="spin"></div></div>';}
-function when(t){try{return new Date(t).toLocaleString('fr-FR');}catch(e){return t;}}
+function when(t){try{return new Date(t).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return t;}}
 function dur(s){s=Number(s)||0;var h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h>0?(h+'h '+m+'m'):(m+'m');}
 function isOn(ls){return ls&&(Date.now()-new Date(ls).getTime()<180000);}
 async function api(p,o){try{var r=await fetch('/api/'+p,{credentials:'same-origin',...(o||{})});if(r.status===401){ME=null;return{unauth:true};}return await r.json();}catch(e){return{neterr:true};}}
-function go(h){if(location.hash===h){route();}else{location.hash=h;}toggleSide(0);}
+function go(h){if(location.hash===h)route();else location.hash=h;toggleSide(0);}
 function toggleSide(on){document.getElementById('side').classList.toggle('open',!!on);document.getElementById('scrim').classList.toggle('on',!!on);}
 function zoom(u){document.getElementById('lvimg').src=u;document.getElementById('lv').classList.add('on');}
 window.zoom=zoom;window.go=go;window.toggleSide=toggleSide;
-var SHIELD='<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#gc)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#04231f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gc" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#1fe3c6"/><stop offset="1" stop-color="#5b9dff"/></linearGradient></defs></svg>';
 
-window.cp=function(txt,btn){try{navigator.clipboard.writeText(txt);var o=btn.textContent;btn.textContent='Copié ✓';setTimeout(function(){btn.textContent=o;},1400);}catch(e){}};
+var SHIELD='<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5l8-3z" fill="url(#gc)"/><path d="M8.5 12l2.5 2.5 4.5-5.2" stroke="#021a14" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gc" x1="4" y1="2" x2="20" y2="22"><stop stop-color="#00e8b8"/><stop offset="1" stop-color="#4d94ff"/></linearGradient></defs></svg>';
+var SHIELD_SM='<span style="width:15px;height:15px;display:inline-block">'+SHIELD+'</span>';
 
-/* ===== AUTH / CHROME ===== */
+window.cp=function(txt,btn){try{navigator.clipboard.writeText(txt);var o=btn.textContent;btn.textContent='Copié ✓';btn.style.color='var(--grn)';setTimeout(function(){btn.textContent=o;btn.style.color='';},1600);}catch(e){}};
+
+/* ===== AUTH ===== */
 function loginView(){
-  navUser.innerHTML='';srvlist.innerHTML='';crumb.textContent='Connexion';
-  app.innerHTML='<div class="center"><div><div style="width:56px;height:56px;margin:0 auto 16px">'+SHIELD+'</div><h1 style="font-size:26px">Customer Area</h1><p style="color:var(--mut);margin:10px 0 22px">Connecte-toi avec Discord pour gérer tes serveurs protégés.</p><a class="btn btn-primary" href="/api/auth-login">Se connecter avec Discord</a></div></div>';
+  navUser.innerHTML='';srvlist.innerHTML='';crumb.innerHTML='<b>Connexion</b>';
+  app.innerHTML='<div class="center"><div class="login-box"><div style="width:52px;height:52px;margin:0 auto;filter:drop-shadow(0 6px 20px rgba(0,232,184,.35))">'+SHIELD+'</div><h1>Customer Area</h1><p>Connecte-toi avec Discord pour gérer tes serveurs protégés par HeRo Shield.</p><button class="btn btn-discord" onclick="location.href=\'/api/auth-login\'"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4.4A17 17 0 0015.6 3l-.3.5a12 12 0 013.7 1.9 15.8 15.8 0 00-13.9 0A12 12 0 018.7 3.5L8.4 3A17 17 0 004 4.4 18 18 0 001 16.9a17 17 0 005.2 2.6l.4-.6a11 11 0 01-1.8-.9l.4-.3a12 12 0 0010.3 0l.4.3a11 11 0 01-1.8.9l.4.6A17 17 0 0023 16.9 18 18 0 0020 4.4z"/></svg>Se connecter avec Discord</button></div></div>';
 }
 function renderUser(){
   var av=ME.avatar?'https://cdn.discordapp.com/avatars/'+ME.id+'/'+ME.avatar+'.png?size=48':'https://cdn.discordapp.com/embed/avatars/0.png';
-  navUser.innerHTML='<span class="chip"><img src="'+av+'"> '+esc(ME.username)+' &nbsp;<a class="btn btn-ghost btn-sm" href="/api/logout">Déconnexion</a></span>';
+  navUser.innerHTML='<span class="chip"><img src="'+av+'">'+esc(ME.username)+'</span><a class="btn btn-ghost btn-sm" href="/api/logout" style="margin-left:8px">Déconnexion</a>';
 }
 function setActive(nav){document.querySelectorAll('.nav [data-nav]').forEach(function(b){b.classList.toggle('act',b.getAttribute('data-nav')===nav);});}
 function renderSidebarServers(activeName,activeSub){
-  if(!SERVERS.length){srvlist.innerHTML='<div style="padding:10px 11px;color:var(--dim);font-size:12.5px">Aucun serveur.<br><a style="color:var(--cy)" href="#/redeem" onclick="go(\'#/redeem\')">+ Ajouter</a></div>';return;}
+  if(!SERVERS.length){srvlist.innerHTML='<div style="padding:10px 12px;color:var(--dim);font-size:12px">Aucun serveur.<br><a style="color:var(--cy);font-weight:600" href="#/redeem" onclick="go(\'#/redeem\')">+ Ajouter un serveur</a></div>';return;}
   srvlist.innerHTML=SERVERS.map(function(s){
     var on=isOn(s.last_seen),op=(OPEN===s.name);
-    var subs=[['dash','Dashboard'],['players','Players'],['bans','Bans'],['logs','Logs']];
-    return '<button class="srvbtn'+(op?' open':'')+(activeName===s.name&&!activeSub?' act':'')+'" onclick="toggleSrv(\''+qesc(s.name)+'\')"><span class="dot '+(on?'on':'off')+'"></span><span class="nm">'+esc(s.name||'Serveur')+'</span><span class="car">▶</span></button>'+
-      '<div class="subnav'+(op?' open':'')+'" id="sub_'+btoa(unescape(encodeURIComponent(s.name))).replace(/=/g,'')+'">'+
+    var subs=[['dash','Dashboard'],['players','Players'],['bans','Bans'],['logs','Logs'],['cfg','Configuration']];
+    return '<button class="srvbtn'+(op?' open act':'')+'" onclick="toggleSrv(\''+qesc(s.name)+'\')"><span class="dot '+(on?'on':'off')+'"></span><span class="nm">'+esc(s.name||'Serveur')+'</span><span class="arr">▶</span></button>'+
+      '<div class="subnav'+(op?' open':'')+'">'+
       subs.map(function(x){return '<button class="'+(activeName===s.name&&activeSub===x[0]?'act':'')+'" onclick="go(\'#/s/'+encodeURIComponent(s.name)+'/'+x[0]+'\')">'+x[1]+'</button>';}).join('')+
       '</div>';
   }).join('');
 }
-window.toggleSrv=function(name){ if(OPEN===name){ // deja ouvert -> aller a son dashboard
-    go('#/s/'+encodeURIComponent(name)+'/dash'); } else { OPEN=name; renderSidebarServers(name,null); go('#/s/'+encodeURIComponent(name)+'/dash'); } };
+window.toggleSrv=function(name){OPEN=(OPEN===name)?null:name;if(OPEN)go('#/s/'+encodeURIComponent(name)+'/dash');else renderSidebarServers();};
 
-async function ensureMe(){ if(ME&&SERVERS.length>=0&&ME.__loaded) return true; var d=await api('me'); if(d.unauth||d.neterr||!d.user){return false;} ME=d.user;ME.__loaded=true;SERVERS=d.servers||[]; renderUser(); return true; }
+async function ensureMe(){if(ME&&ME.__loaded)return true;var d=await api('me');if(d.unauth||d.neterr||!d.user)return false;ME=d.user;ME.__loaded=true;SERVERS=d.servers||[];renderUser();return true;}
 
-/* ===== PAGE : DASHBOARD (global) ===== */
+/* ===== PAGE: DASHBOARD ===== */
 async function home(){loading();if(!await ensureMe())return loginView();setActive('home');OPEN=null;renderSidebarServers();crumb.innerHTML='<b>Dashboard</b>';
+  var totalBans=0,totalPlayers=0;
   var cards=SERVERS.map(function(s){var on=isOn(s.last_seen);
-    return '<div class="card" style="cursor:pointer" onclick="go(\'#/s/'+encodeURIComponent(s.name)+'/dash\')"><div class="ch">'+SHIELD_SM+esc(s.name||'Serveur')+'<span class="badge '+(on?'on':'off')+'">'+(on?'Online':'Offline')+'</span></div><div class="big">'+(on?((s.online||0)+'/'+(s.max||0)):'—')+'</div><div class="small">'+(on?'joueurs en ligne':'vu '+when(s.last_seen))+'</div></div>';
+    return '<div class="card" style="cursor:pointer" onclick="go(\'#/s/'+encodeURIComponent(s.name)+'/dash\')"><div class="ch">'+SHIELD_SM+' '+esc(s.name||'Serveur')+'<span class="badge '+(on?'on':'off')+'" style="margin-left:auto">'+(on?'Online':'Offline')+'</span></div><div class="big">'+(on?((s.online||0)+'<span style="font-size:13px;color:var(--dim)"> / '+(s.max||0)+'</span>'):'—')+'</div><div class="small">'+(on?'joueurs en ligne':'vu '+when(s.last_seen))+'</div></div>';
   }).join('');
-  app.innerHTML='<div class="page-h"><h1>Mes serveurs</h1><p>Vue d\'ensemble de tes serveurs protégés par HeRo Shield.</p></div>'+
-    (cards?'<div class="cards">'+cards+'</div>':'<div class="panel"><div class="empty">Aucun serveur connecté. Va dans <b>Redeem</b> pour créer une clé.</div></div>')+
-    '<div style="display:flex;gap:10px;margin-top:4px"><button class="btn btn-primary" onclick="go(\'#/redeem\')">+ Ajouter un serveur</button><button class="btn btn-ghost" onclick="go(\'#/download\')">Télécharger le resource</button></div>';
+  app.innerHTML='<div class="banner"><div class="bsvg">'+SHIELD+'</div><div class="btxt"><h2>Bienvenue, '+esc(ME.username)+'</h2><p>Gère tes serveurs protégés par HeRo Shield depuis ce panel.</p></div></div>'+
+    '<div class="page-h"><h1>Mes serveurs <span style="color:var(--dim);font-size:14px;font-weight:400">('+SERVERS.length+')</span></h1></div>'+
+    (cards?'<div class="cards">'+cards+'</div>':'<div class="panel"><div class="empty">Aucun serveur connecté.<br><br><button class="btn btn-grad" onclick="go(\'#/redeem\')">+ Créer mon premier serveur</button></div></div>')+
+    '<div style="display:flex;gap:8px;margin-top:6px"><button class="btn btn-grad" onclick="go(\'#/redeem\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M12 5v14M5 12h14"/></svg>Ajouter un serveur</button><button class="btn btn-ghost" onclick="go(\'#/download\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>Télécharger</button></div>';
 }
-var SHIELD_SM='<span class="ci" style="width:16px;height:16px;display:inline-block">'+SHIELD+'</span>';
 
-/* ===== PAGE : REDEEM (creer une cle) ===== */
-async function redeem(){loading();if(!await ensureMe())return loginView();setActive('redeem');crumb.innerHTML='Dashboard &nbsp;›&nbsp; <b>Redeem</b>';
-  app.innerHTML='<div class="page-h"><h1>Redeem — Nouvelle clé serveur</h1><p>Donne un nom à ton serveur. Tu reçois une <b>clé unique</b> à coller dans ton config.lua.</p></div>'+
-   '<div class="panel" style="padding:20px"><div style="display:flex;gap:10px;flex-wrap:wrap"><input id="c_name" placeholder="Nom de ton serveur (ex: Strada Roleplay)" style="flex:1;min-width:260px"><button class="btn btn-primary" id="c_btn">Créer la clé</button></div><div id="c_out" style="margin-top:14px"></div></div>'+
-   '<div class="panel" style="padding:20px;margin-top:4px"><h3 style="font-size:15px;margin-bottom:6px">Déjà une clé ?</h3><div style="color:var(--mut);font-size:13px">Colle-la dans <b>config.lua</b> → <span class="key">Config.ReportingToken</span>, puis démarre le resource. Ton serveur apparaîtra 🟢 automatiquement dans quelques secondes.</div></div>';
+/* ===== PAGE: REDEEM ===== */
+async function redeem(){loading();if(!await ensureMe())return loginView();setActive('redeem');crumb.innerHTML='Dashboard <span>›</span> <b>Redeem</b>';
+  app.innerHTML='<div class="page-h"><h1>Redeem — Nouvelle clé serveur</h1><p>Crée un serveur et obtiens ta clé unique pour config.lua</p></div>'+
+   '<div class="cfg-grid"><div class="panel" style="padding:22px"><h3 style="font-size:14px;margin-bottom:14px"><svg style="width:16px;height:16px;color:var(--cy);vertical-align:middle;margin-right:6px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Créer un nouveau serveur</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="c_name" placeholder="Nom du serveur (ex: Strada Roleplay)" style="flex:1;min-width:240px"><button class="btn btn-cy" id="c_btn">Générer la clé</button></div><div id="c_out" style="margin-top:14px"></div></div>'+
+   '<div class="panel" style="padding:22px"><h3 style="font-size:14px;margin-bottom:8px"><svg style="width:16px;height:16px;color:var(--blu);vertical-align:middle;margin-right:6px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Tu as déjà une clé ?</h3><div style="color:var(--mut);font-size:13px;line-height:1.6">Colle-la dans <b>config.lua</b> :<br><span class="key" style="font-size:12px">Config.ReportingToken = "HS-XXXX-XXXX-XXXX"</span><br><br>Puis redémarre ton serveur. Il apparaîtra automatiquement <span class="dot on" style="width:6px;height:6px"></span> dans ton dashboard.</div></div></div>';
   document.getElementById('c_btn').onclick=async function(){
     var name=document.getElementById('c_name').value.trim();
-    if(!name){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">Entre un nom de serveur.</span>';return;}
+    if(!name){document.getElementById('c_out').innerHTML='<span style="color:var(--amber)">⚠ Entre un nom de serveur.</span>';return;}
     this.textContent='…';this.disabled=true;
     var r=await api('connect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});
-    this.textContent='Créer la clé';this.disabled=false;
+    this.textContent='Générer la clé';this.disabled=false;
     if(r.ok){
       var snip='Config.ReportingUrl   = "'+location.origin+'/api/ingest"\nConfig.ReportingToken = "'+r.key+'"\nConfig.LicenseUrl     = "'+location.origin+'/api/license/validate"';
       window.__snip=snip;window.__key=r.key;
-      document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:10px">✓ '+esc(r.name)+' créé ! Garde bien ta clé.</div>'+
-        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="key" style="font-size:14px;padding:7px 12px">'+esc(r.key)+'</span><button class="btn btn-ghost btn-sm" onclick="cp(window.__key,this)">Copier la clé</button></div>'+
-        '<div style="color:var(--mut);font-size:13px">Colle ceci dans ton <b>config.lua</b> puis redémarre le resource :</div><pre>'+esc(snip)+'</pre>'+
-        '<div style="display:flex;gap:10px;margin-top:10px"><button class="btn btn-primary" onclick="cp(window.__snip,this)">Copier la config</button><button class="btn btn-ghost" onclick="location.reload()">Voir mes serveurs</button></div>';
-    } else { document.getElementById('c_out').innerHTML='<span style="color:var(--red)">'+esc(r.error||'Erreur')+'</span>'; }
+      document.getElementById('c_out').innerHTML='<div style="color:var(--cy);font-family:\'Chakra Petch\';font-weight:600;margin-bottom:12px">✓ Serveur "'+esc(r.name)+'" créé !</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="key" style="font-size:14px;padding:8px 14px;background:var(--panel);border-radius:8px">'+esc(r.key)+'</span><button class="btn btn-ghost btn-sm" onclick="cp(window.__key,this)">📋 Copier la clé</button></div>'+
+        '<div style="color:var(--mut);font-size:13px;margin-bottom:8px">Colle ceci dans ton <b>config.lua</b> puis redémarre :</div><pre>'+esc(snip)+'</pre>'+
+        '<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-cy btn-sm" onclick="cp(window.__snip,this)">📋 Copier la config</button><button class="btn btn-ghost btn-sm" onclick="ME.__loaded=false;go(\'#/\')">← Voir mes serveurs</button></div>';
+    } else { document.getElementById('c_out').innerHTML='<span style="color:var(--red)">✕ '+esc(r.error||'Erreur')+'</span>'; }
   };
 }
 
-/* ===== PAGE : DOWNLOAD ===== */
-async function download(){loading();if(!await ensureMe())return loginView();setActive('download');crumb.innerHTML='Dashboard &nbsp;›&nbsp; <b>Download</b>';
-  app.innerHTML='<div class="page-h"><h1>Télécharge HeRo Shield Anti-Cheat</h1><p>La dernière version du resource, prête pour ton serveur FiveM.</p></div>'+
+/* ===== PAGE: DOWNLOAD ===== */
+async function download(){loading();if(!await ensureMe())return loginView();setActive('download');crumb.innerHTML='Dashboard <span>›</span> <b>Download</b>';
+  app.innerHTML='<div class="page-h"><h1>Télécharge HeRo Shield</h1><p>Dernière version du resource anti-cheat pour FiveM.</p></div>'+
    '<div class="dl-grid">'+
-     '<div class="dl-box" style="text-align:center"><h3 style="font-size:16px">Download HeRo Shield</h3><p style="color:var(--mut);font-size:13px;margin:6px 0 0">Télécharge et commence à protéger ton serveur.</p>'+
-       '<a class="dl-circle" href="/HeRoShield.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg><span>Download</span></a>'+
-       '<div style="color:var(--dim);font-size:12px">v1.1.0 • ESX / QBCore / Qbox / Standalone</div></div>'+
-     '<div class="dl-box"><h3 style="font-size:16px;margin-bottom:4px">Guide d\'installation</h3><p style="color:var(--blu);font-size:13px;margin:0 0 10px">Suis ces étapes rapides.</p>'+
-       '<div class="step"><div class="num">1</div><div><div class="st">Place le dossier <b>HeRoShield</b> dans <b>/resources</b></div><div class="sd">Directement dans resources, pas dans un sous-dossier.</div></div></div>'+
-       '<div class="step"><div class="num">2</div><div><div class="st">Ajoute en HAUT de ton <b>server.cfg</b> :</div><pre>ensure HeRoShield</pre></div></div>'+
-       '<div class="step"><div class="num">3</div><div><div class="st">Colle ta clé dans <b>config.lua</b></div><div class="sd"><span class="key">Config.ReportingToken = "HS-…"</span> — récupère-la dans Redeem.</div></div></div>'+
-       '<div class="step"><div class="num">4</div><div><div class="st">Démarre ton serveur et profite de la protection !</div><div class="sd">Le serveur apparaît 🟢 ici automatiquement.</div></div></div>'+
+     '<div class="dl-box" style="text-align:center"><h3 style="font-size:15px">HeRo Shield Anti-Cheat</h3><p style="color:var(--mut);font-size:12.5px;margin:6px 0 0">Télécharge et protège ton serveur.</p>'+
+       '<a class="dl-circle" href="https://github.com/HaMaDevs/HeRoShield/releases/latest" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg><span>Download</span></a>'+
+       '<div style="color:var(--dim);font-size:11.5px;margin-top:4px">v1.1.0 • ESX / QBCore / Qbox / Standalone</div></div>'+
+     '<div class="dl-box"><h3 style="font-size:15px;margin-bottom:4px">Guide d\'installation</h3><p style="color:var(--cy);font-size:12.5px;margin:0 0 12px;font-family:\'Chakra Petch\';font-weight:500">4 étapes, 2 minutes.</p>'+
+       '<div class="step"><div class="num">1</div><div><div class="st">Place <b>HeRoShield</b> dans <b>/resources</b></div><div class="sd">Directement dans resources, pas dans un sous-dossier.</div></div></div>'+
+       '<div class="step"><div class="num">2</div><div><div class="st">Ajoute dans ton <b>server.cfg</b></div><pre>ensure HeRoShield\nadd_ace resource.HeRoShield command allow</pre></div></div>'+
+       '<div class="step"><div class="num">3</div><div><div class="st">Configure ta clé dans <b>config.lua</b></div><div class="sd"><span class="key">Config.ReportingToken = "HS-…"</span><br>Récupère-la dans <a style="color:var(--cy);font-weight:600" href="#/redeem" onclick="go(\'#/redeem\')">Redeem</a>.</div></div></div>'+
+       '<div class="step"><div class="num">4</div><div><div class="st">Démarre ton serveur !</div><div class="sd">Il apparaît <span class="dot on" style="width:6px;height:6px"></span> automatiquement dans ton dashboard.</div></div></div>'+
      '</div>'+
    '</div>';
 }
 
-/* ===== PAGE : SERVER (dash / players / bans / logs) ===== */
+/* ===== PAGE: CONFIG LIBRARY (global) ===== */
+async function configLib(){loading();if(!await ensureMe())return loginView();setActive('cfglib');crumb.innerHTML='Dashboard <span>›</span> <b>Configuration</b>';
+  var dets=[
+    {n:'God Mode',k:'godMode',en:true,a:'ban'},
+    {n:'Infinite Stamina',k:'infiniteStamina',en:true,a:'kick'},
+    {n:'Noclip',k:'noclip',en:true,a:'kick'},
+    {n:'Super Jump',k:'superJump',en:true,a:'kick'},
+    {n:'Speed Hack',k:'speedHack',en:true,a:'kick'},
+    {n:'Aimbot',k:'aimbot',en:true,a:'kick'},
+    {n:'Trigger Spam',k:'triggerSpam',en:true,a:'kick'},
+    {n:'Invisible',k:'invisible',en:true,a:'kick'},
+    {n:'Vehicle Boost',k:'vehicleBoost',en:true,a:'kick'},
+    {n:'Infinite Ammo',k:'infiniteAmmo',en:true,a:'kick'},
+    {n:'Explosions',k:'explosions',en:true,a:'ban'},
+    {n:'External Menu',k:'externalMenu',en:true,a:'ban'},
+    {n:'Command Abuse',k:'commandAbuse',en:true,a:'ban'},
+    {n:'Weapon Blacklist',k:'weaponBlacklist',en:true,a:'kick'},
+    {n:'Weapon Damage',k:'weaponDamage',en:true,a:'log'},
+    {n:'Manual Ban',k:'manual',en:true,a:'ban'},
+  ];
+  var thresholds=[
+    {n:'Max Health',v:'200'},{n:'Max Armor',v:'100'},{n:'Explosion/min',v:'12'},
+    {n:'Noclip Speed',v:'22.0'},{n:'Speed On Foot',v:'18.0'},{n:'Jump Height',v:'4.0'},
+    {n:'Ammo Max',v:'9999'},{n:'Damage Max',v:'600'},{n:'Vehicle Speed Max',v:'120.0'},
+    {n:'Aim Snap Angle',v:'0.995'},{n:'Aim Snap Time',v:'150ms'},{n:'Aim Snap Degrees',v:'35.0°'},
+    {n:'Stamina Max',v:'100'},{n:'Trigger/sec',v:'60'},{n:'Invisible Alpha',v:'50'},
+  ];
+
+  app.innerHTML='<div class="page-h"><h1>Configuration Library</h1><p>Référence complète des détections et seuils HeRo Shield — modifie-les dans ton <b>config.lua</b>.</p></div>'+
+    '<div class="cfg-grid">'+
+    '<div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 4-3 7-7 9-4-2-7-5-7-9V6z"/></svg>Détections <span style="color:var(--dim);font-size:12px;font-weight:400">('+dets.length+')</span></h3>'+
+      dets.map(function(d){return '<div class="det-row"><div class="toggle '+(d.en?'on':'')+'"></div><span class="nm">'+d.n+'</span><span class="act '+d.a+'">'+d.a.toUpperCase()+'</span></div>';}).join('')+
+    '</div>'+
+    '<div>'+
+      '<div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20v-3"/></svg>Seuils (Thresholds)</h3>'+
+        thresholds.map(function(t){return '<div class="cfg-row"><span class="lbl">'+t.n+'</span><span class="val">'+t.v+'</span></div>';}).join('')+
+      '</div>'+
+      '<div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Mode général</h3>'+
+        '<div class="cfg-row"><span class="lbl">DetectOnly <small>Observe sans sanctionner</small></span><span class="val amber">ON (observation)</span></div>'+
+        '<div class="cfg-row"><span class="lbl">DefaultAction</span><span class="val red">ban</span></div>'+
+        '<div class="cfg-row"><span class="lbl">BanDuration</span><span class="val">0 (permanent)</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Screenshots</span><span class="val grn">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Screenshot Quality</span><span class="val">0.7</span></div>'+
+        '<div class="cfg-row"><span class="lbl">License Required</span><span class="val grn">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Storage Type</span><span class="val">json</span></div>'+
+      '</div>'+
+      '<div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Logs activés</h3>'+
+        '<div class="cfg-row"><span class="lbl">ban, unban, kick, detection</span><span class="val grn">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">adminAction, commandAbuse, externalMenu</span><span class="val grn">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">playerJoin, playerLeave, serverStart</span><span class="val grn">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">playerSpawn, playerDeath, playerKill</span><span class="val red">OFF</span></div>'+
+        '<div class="cfg-row"><span class="lbl">weaponSpawn, vehicleSpawn, giveItem</span><span class="val red">OFF</span></div>'+
+      '</div>'+
+    '</div></div>'+
+    '<div class="panel" style="padding:18px"><div style="color:var(--mut);font-size:13px">💡 Ces valeurs sont les <b>défauts recommandés</b>. Pour les modifier, ouvre <span class="key">config.lua</span> dans ton resource HeRoShield et ajuste selon ton serveur.</div></div>';
+}
+
+/* ===== PAGE: SERVER ===== */
 async function serverView(name,sub){sub=sub||'dash';loading();if(!await ensureMe())return loginView();
   OPEN=name;renderSidebarServers(name,sub);setActive(null);
   var d=await api('data?server='+encodeURIComponent(name));if(d.unauth)return loginView();
-  if(d.error){crumb.innerHTML='Dashboard';app.innerHTML='<div class="center"><div><p style="color:var(--red)">'+esc(d.error)+'</p><a class="btn btn-ghost" href="#/" onclick="go(\'#/\')">← Retour</a></div></div>';return;}
+  if(d.error){crumb.innerHTML='<b>Dashboard</b>';app.innerHTML='<div class="center"><div><p style="color:var(--red);margin-bottom:16px">'+esc(d.error)+'</p><button class="btn btn-ghost" onclick="go(\'#/\')">← Retour</button></div></div>';return;}
   var st=d.stats||{},sv=d.server||{},on=isOn(sv.last_seen);
-  crumb.innerHTML='Dashboard &nbsp;›&nbsp; <b>'+esc(sv.name||name)+'</b>';
-  var SUBLBL={dash:'Server Dashboard',players:'Players',bans:'Bans',logs:'Logs'};
+  crumb.innerHTML='<a style="cursor:pointer;color:var(--dim)" onclick="go(\'#/\')">Dashboard</a> <span>›</span> <b>'+esc(sv.name||name)+'</b>';
 
   function headDash(){
-    var mask='•'.repeat(28);
-    return '<div class="banner"><div class="bsvg">'+SHIELD+'</div></div>'+
-    '<div class="page-h" style="margin-bottom:14px"><h1>'+esc(sv.name||name)+'</h1><p>Monitoring & gestion de ton serveur.</p></div>'+
+    var mask='•'.repeat(24);
+    return '<div class="banner"><div class="bsvg">'+SHIELD+'</div><div class="btxt"><h2>'+esc(sv.name||name)+'</h2><p><span class="dot '+(on?'on':'off')+'"></span>'+(on?'En ligne — '+(sv.online||0)+' joueurs':'Hors ligne — vu '+when(sv.last_seen))+'</p></div></div>'+
     '<div class="cards">'+
-      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Server Status<span class="badge '+(on?'on':'off')+'">'+(on?'Online':'Offline')+'</span></div><div class="big">'+esc(sv.name||name)+'</div><div class="small">v1.1.0 • HeRo Shield</div></div>'+
-      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Server IP</div><div class="big" style="font-size:17px">'+(on?'Détecté ✓':'Non défini')+'</div><div class="small">détecté via le resource</div></div>'+
-      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 14a3 3 0 100-6 3 3 0 000 6zm3-3h8m-3 0v3"/></svg>License Key</div><div class="keymask" id="keymask">'+mask+'</div><div class="row-btns"><button class="btn btn-ghost btn-sm" id="kshow">Show</button><button class="btn btn-ghost btn-sm" onclick="cp(window.__srvkey,this)">Copy</button></div></div>'+
-      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Licence<span class="badge free">Gratuit</span></div><div class="big">∞</div><div class="small">illimité — 100% gratuit</div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/></svg>Server Status<span class="badge '+(on?'on':'off')+'" style="margin-left:auto">'+(on?'Online':'Offline')+'</span></div><div class="big">'+esc(sv.name||name)+'</div><div class="small">HeRo Shield v1.1.0</div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 8h20"/></svg>Server IP</div><div class="big" style="font-size:16px">'+(on?'Détecté automatiquement':'—')+'</div><div class="small">via le resource HeRoShield</div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>License Key</div><div class="keymask" id="keymask">'+mask+'</div><div class="row-btns"><button class="btn btn-ghost btn-sm" id="kshow">👁 Show</button><button class="btn btn-ghost btn-sm" onclick="cp(window.__srvkey,this)">📋 Copy</button></div></div>'+
+      '<div class="card"><div class="ch"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Licence<span class="badge free" style="margin-left:auto">FREE</span></div><div class="big">∞</div><div class="small">Gratuit à vie — aucune limite</div></div>'+
     '</div>'+
-    '<div class="analytics"><div class="ah"><div><h3>Server Analytics</h3><p>Statistiques joueurs & performances.</p></div><div class="seg"><button class="act">Aujourd\'hui</button><button>7 jours</button><button>30 jours</button></div></div>'+
-      '<div class="metrics"><div class="metric"><div class="ml">Joueurs actuels</div><div class="mv cy">'+(on?(sv.online||0):0)+'<span style="font-size:14px;color:var(--dim)"> / '+(sv.max||0)+'</span></div></div>'+
+    '<div class="analytics"><div class="ah"><div><h3>Server Analytics</h3><p>Vue en temps réel de ton serveur.</p></div><div class="seg"><button class="act">Aujourd\'hui</button><button>7 jours</button><button>30 jours</button></div></div>'+
+      '<div class="metrics">'+
+        '<div class="metric"><div class="ml">Joueurs actuels</div><div class="mv cy">'+(on?(sv.online||0):0)+'<span style="font-size:13px;color:var(--dim)"> / '+(sv.max||0)+'</span></div></div>'+
         '<div class="metric"><div class="ml">Joueurs bannis</div><div class="mv rd">'+(st.bans||0)+'</div></div>'+
-        '<div class="metric"><div class="ml">Pic joueurs</div><div class="mv">'+((st.players? (sv.max||0):'—'))+'</div></div>'+
-        '<div class="metric"><div class="ml">Joueurs connus</div><div class="mv">'+(st.players||0)+'</div></div></div>'+
-      ((st.bans||st.logs)?'':'<div class="chart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><div>Pas encore de données. Elles arrivent dès que le serveur tourne un moment.</div></div>')+
-    '</div>';
+        '<div class="metric"><div class="ml">Pic joueurs (24h)</div><div class="mv blu">'+(sv.max||'—')+'</div></div>'+
+        '<div class="metric"><div class="ml">Joueurs connus</div><div class="mv purp">'+(st.players||0)+'</div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="serverView(\''+qesc(name)+'\',\'dash\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Rafraîchir</button><button class="btn btn-red btn-sm" onclick="delServer(\''+qesc(name)+'\',event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg> Supprimer</button></div>';
   }
-  function bansHTML(){var b=d.bans||[];if(!b.length)return '<div class="panel"><div class="empty">Aucun ban. ✅</div></div>';
-    return '<div class="panel"><div class="panel-h">Bans & preuves</div><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Raison</th><th>Détail</th><th>Preuve</th><th>Quand</th></tr></thead><tbody>'+
-      b.map(function(x){var img=x.screenshot?('<img class="proof" src="'+esc(x.screenshot)+'" onclick="zoom(\''+esc(x.screenshot)+'\')">'):'<span style="color:var(--dim)">—</span>';
-      return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut)">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim)">'+when(x.created_at)+'</td></tr>';}).join('')+
-      '</tbody></table></div></div>';}
-  function playersHTML(){var p=d.players||[];if(!p.length)return '<div class="panel"><div class="empty">Aucun joueur enregistré pour l\'instant.</div></div>';
-    return '<div class="panel"><div class="panel-h">Joueurs & temps de jeu</div><div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Vu</th></tr></thead><tbody>'+
-      p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:4px">'+esc(x.identifier||'')+'</div></td><td>'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
-      '</tbody></table></div></div>';}
-  function logsHTML(){var l=d.logs||[];if(!l.length)return '<div class="panel"><div class="empty">Aucun log.</div></div>';
-    return '<div class="panel"><div class="panel-h">Logs serveur</div>'+l.map(function(x){return '<div class="logrow"><span class="t">'+when(x.created_at)+'</span><span class="tag log">'+esc(x.type||'')+'</span><span>'+esc(x.detail||'')+'</span></div>';}).join('')+'</div>';}
 
-  var body = sub==='bans'?bansHTML() : sub==='players'?playersHTML() : sub==='logs'?logsHTML() : headDash();
-  var topbtns='<div style="display:flex;gap:8px;margin-left:auto"><button class="btn btn-ghost btn-sm" onclick="serverView(\''+qesc(name)+'\',\''+sub+'\')">↻ Rafraîchir</button><button class="btn btn-ghost btn-sm" onclick="delServer(\''+qesc(name)+'\',event)">🗑 Supprimer</button></div>';
+  function bansHTML(){var b=d.bans||[];
+    return '<div class="panel"><div class="panel-h"><svg style="width:16px;height:16px;color:var(--red)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>Bans & preuves<span class="panel-h cnt">'+b.length+'</span></div>'+
+    (b.length?'<div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Raison</th><th>Détail</th><th>Preuve</th><th>Date</th></tr></thead><tbody>'+
+      b.map(function(x){var img=x.screenshot?('<img class="proof" src="'+esc(x.screenshot)+'" onclick="zoom(\''+esc(x.screenshot)+'\')">'):'<span style="color:var(--dim)">—</span>';
+      return '<tr><td><b>'+esc(x.player_name||'?')+'</b><div class="key" style="margin-top:3px">'+esc(x.identifier||'')+'</div></td><td><span class="tag '+(x.type==='kick'?'kick':x.type==='log'?'log':'ban')+'">'+esc(x.reason||x.type||'-')+'</span></td><td style="color:var(--mut);max-width:200px">'+esc(x.detail||'-')+'</td><td>'+img+'</td><td style="color:var(--dim);white-space:nowrap">'+when(x.created_at)+'</td></tr>';}).join('')+
+      '</tbody></table></div>':'<div class="empty">Aucun ban enregistré. ✅</div>')+'</div>';}
+
+  function playersHTML(){var p=d.players||[];
+    return '<div class="panel"><div class="panel-h"><svg style="width:16px;height:16px;color:var(--blu)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Joueurs<span class="panel-h cnt">'+p.length+'</span></div>'+
+    (p.length?'<div style="overflow-x:auto"><table><thead><tr><th>Joueur</th><th>Temps de jeu</th><th>Statut</th><th>Dernière connexion</th></tr></thead><tbody>'+
+      p.map(function(x){return '<tr><td><b>'+esc(x.name||'?')+'</b><div class="key" style="margin-top:3px">'+esc(x.identifier||'')+'</div></td><td style="font-family:\'Chakra Petch\';font-weight:600">'+dur(x.playtime_sec)+'</td><td><span class="dot '+(x.online?'on':'off')+'"></span>'+(x.online?'en ligne':'hors ligne')+'</td><td style="color:var(--dim)">'+when(x.last_seen)+'</td></tr>';}).join('')+
+      '</tbody></table></div>':'<div class="empty">Aucun joueur enregistré.</div>')+'</div>';}
+
+  function logsHTML(){var l=d.logs||[];
+    return '<div class="panel"><div class="panel-h"><svg style="width:16px;height:16px;color:var(--amber)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>Logs<span class="panel-h cnt">'+l.length+'</span></div>'+
+    (l.length?l.map(function(x){return '<div class="logrow"><span class="t">'+when(x.created_at)+'</span><span class="tag log">'+esc(x.type||'')+'</span><span style="flex:1;color:var(--mut)">'+esc(x.detail||'')+'</span></div>';}).join(''):'<div class="empty">Aucun log.</div>')+'</div>';}
+
+  function cfgHTML(){
+    var dets=[{n:'God Mode',a:'ban'},{n:'Infinite Stamina',a:'kick'},{n:'Noclip',a:'kick'},{n:'Super Jump',a:'kick'},{n:'Speed Hack',a:'kick'},{n:'Aimbot',a:'kick'},{n:'Trigger Spam',a:'kick'},{n:'Invisible',a:'kick'},{n:'Vehicle Boost',a:'kick'},{n:'Infinite Ammo',a:'kick'},{n:'Explosions',a:'ban'},{n:'External Menu',a:'ban'},{n:'Command Abuse',a:'ban'},{n:'Weapon Blacklist',a:'kick'}];
+    return '<div class="cfg-grid">'+
+      '<div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 4-3 7-7 9-4-2-7-5-7-9V6z"/></svg>Détections actives</h3>'+dets.map(function(d){return '<div class="det-row"><div class="toggle on"></div><span class="nm">'+d.n+'</span><span class="act '+d.a+'">'+d.a.toUpperCase()+'</span></div>';}).join('')+'</div>'+
+      '<div><div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Mode</h3>'+
+        '<div class="cfg-row"><span class="lbl">DetectOnly</span><span class="val amber">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Screenshots</span><span class="val grn">ON</span></div>'+
+        '<div class="cfg-row"><span class="lbl">DefaultAction</span><span class="val red">ban</span></div>'+
+      '</div>'+
+      '<div class="cfg-section"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20v-3"/></svg>Seuils</h3>'+
+        '<div class="cfg-row"><span class="lbl">Max Health</span><span class="val">200</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Max Armor</span><span class="val">100</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Noclip Speed</span><span class="val">22.0</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Speed On Foot</span><span class="val">18.0</span></div>'+
+        '<div class="cfg-row"><span class="lbl">Explosion/min</span><span class="val">12</span></div>'+
+      '</div></div></div>'+
+      '<div class="panel" style="padding:16px"><div style="color:var(--dim);font-size:12.5px">Modifie ces valeurs dans <span class="key">config.lua</span> de ton resource HeRoShield.</div></div>';
+  }
+
+  var SUBLBL={dash:'Server Dashboard',players:'Players',bans:'Bans',logs:'Logs',cfg:'Configuration'};
+  var body=sub==='bans'?bansHTML():sub==='players'?playersHTML():sub==='logs'?logsHTML():sub==='cfg'?cfgHTML():headDash();
+  var topbtns='<div style="display:flex;gap:6px;margin-left:auto"><button class="btn btn-ghost btn-sm" onclick="serverView(\''+qesc(name)+'\',\''+sub+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Rafraîchir</button><button class="btn btn-red btn-sm" onclick="delServer(\''+qesc(name)+'\',event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg> Supprimer</button></div>';
   if(sub!=='dash'){
-    body='<div class="page-h" style="display:flex;align-items:flex-end;gap:12px"><div><h1>'+esc(SUBLBL[sub])+'</h1><p><span class="dot '+(on?'on':'off')+'"></span>'+esc(sv.name||name)+' — '+(on?'en ligne':'hors ligne')+'</p></div>'+topbtns+'</div>'+body;
+    body='<div class="page-h" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><h1>'+esc(SUBLBL[sub])+'</h1><p><span class="dot '+(on?'on':'off')+'"></span>'+esc(sv.name||name)+'</p></div>'+topbtns+'</div>'+body;
   }
   app.innerHTML=body;
   window.__srvkey=d.key||'';
   var ksh=document.getElementById('kshow');
-  if(ksh){var shown=false;ksh.onclick=function(){shown=!shown;document.getElementById('keymask').textContent=shown?(d.key||'—'):('•'.repeat(28));ksh.textContent=shown?'Hide':'Show';};}
+  if(ksh){var shown=false;ksh.onclick=function(){shown=!shown;document.getElementById('keymask').textContent=shown?(d.key||'—'):('•'.repeat(24));ksh.textContent=shown?'🙈 Hide':'👁 Show';};}
 }
 window.serverView=serverView;
-window.delServer=async function(name,ev){if(ev){ev.stopPropagation();ev.preventDefault();}if(!confirm('Supprimer "'+name+'" et toutes ses données ?'))return;var r=await api('delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});if(r.ok){OPEN=null;go('#/');}else alert(r.error||'Erreur');};
+window.delServer=async function(name,ev){if(ev){ev.stopPropagation();ev.preventDefault();}if(!confirm('Supprimer "'+name+'" et toutes ses données ?'))return;var r=await api('delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:name})});if(r.ok){OPEN=null;ME.__loaded=false;go('#/');}else alert(r.error||'Erreur');};
 
 /* ===== ROUTER ===== */
 function route(){
@@ -323,6 +470,7 @@ function route(){
   if(ms)return serverView(decodeURIComponent(ms[1]),ms[2]||'dash');
   if(h==='#/redeem')return redeem();
   if(h==='#/download')return download();
+  if(h==='#/config')return configLib();
   return home();
 }
 window.addEventListener('hashchange',route);
