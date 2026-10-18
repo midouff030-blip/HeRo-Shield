@@ -9,7 +9,10 @@
   const TITLES = {
     overview: 'Overview', detections: 'Detections', bans: 'Bans', players: 'Players', logs: 'Logs',
     settings: 'Settings', servers: 'My servers',
+    scanner: 'Download scanner', pins: 'Scan PINs', signatures: 'Signatures', staff: 'Staff team',
   };
+  // where to download the built PC-check scanner (upload your zip and set this)
+  const SCANNER_URL = '/download/HeRoShieldScanner.zip';
   const ERRORS = {
     state: 'Session expired, try again.', token: 'Discord refused the login.',
     user: 'Could not read your Discord profile.', server: 'Server error, try again.',
@@ -172,7 +175,7 @@
     $('#search').value = '';
     state.cat = '';
     $('#search').hidden = !['detections', 'bans', 'players', 'logs'].includes(tab);
-    $('#server-select').style.display = tab === 'servers' ? 'none' : '';
+    $('#server-select').style.display = ['servers', 'scanner', 'signatures', 'staff'].includes(tab) ? 'none' : '';
     $('#page-title').textContent = TITLES[tab];
     $$('[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     history.replaceState(null, '', `#${tab}`);
@@ -182,6 +185,9 @@
   async function render() {
     const view = $('#view');
     if (state.tab === 'servers') return renderServers(view);
+    if (state.tab === 'scanner') return renderScanner(view);
+    if (state.tab === 'signatures') return renderSignatures(view);
+    if (state.tab === 'staff') return renderStaff(view);
     if (!state.server) {
       view.innerHTML = `<div class="card empty">
         <p style="margin-bottom:16px">You don't have a server yet.</p>
@@ -193,6 +199,7 @@
       if (state.tab === 'overview') await renderOverview(view);
       else if (state.tab === 'settings') await renderSettings(view);
       else if (state.tab === 'logs') await renderLogs(view);
+      else if (state.tab === 'pins') await renderPins(view);
       else await renderTable(view, state.tab);
     } catch (e) {
       view.innerHTML = `<div class="card empty">${esc(e.message)}</div>`;
@@ -382,6 +389,112 @@
       </div>`;
   }
 
+  // ---------- scanner / pins / signatures / staff ----------
+  function renderScanner(view) {
+    view.innerHTML = `
+      <div class="card panel" style="margin-bottom:18px">
+        <h3>HeRo Scanner — PC check</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:18px">
+          A read-only Windows tool players run during a screenshare. It checks running programs,
+          Windows execution traces (even deleted cheats), the FiveM folder and the recycle bin,
+          then sends the result to your dashboard.</p>
+        <a class="btn btn-primary" href="${SCANNER_URL}" download><svg style="width:18px;height:18px" aria-hidden="true"><use href="#i-download"/></svg>Download scanner (.zip)</a>
+        <p class="mono" style="margin-top:12px">Upload your built scanner to <b>/download/HeRoShieldScanner.zip</b>.</p>
+      </div>
+      <div class="card panel">
+        <h3>How a check works</h3>
+        <div class="steps" style="margin-top:4px">
+          <div class="step"><h3>Create a PIN</h3><p>Open <b>Scan PINs</b>, type the player's name, get a PIN.</p></div>
+          <div class="step"><h3>Player runs it</h3><p>They download the scanner, type the PIN, accept the check.</p></div>
+          <div class="step"><h3>Read the result</h3><p>The PIN turns Clean or Cheating with the full report.</p></div>
+        </div>
+        <p style="color:var(--muted);font-size:13px;margin-top:16px">Put a file <b>api.txt</b> next to the scanner with your site URL so results reach this dashboard.</p>
+      </div>`;
+  }
+
+  async function renderPins(view) {
+    const { pins } = await api(`/api/pins?server=${state.server}`);
+    view.innerHTML = `
+      <div class="card panel" style="margin-bottom:18px">
+        <h3>Generate a scan PIN</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <input id="pin-player" class="input" style="flex:1;min-width:180px" placeholder="Player name (optional)">
+          <button class="btn btn-primary" data-newpin>Generate PIN</button>
+        </div>
+        <div id="pin-out" hidden style="margin-top:14px"></div>
+      </div>
+      <div class="card panel">
+        <h3>Recent PINs</h3>
+        ${pins.length ? `<div class="table-wrap"><table>
+          <thead><tr><th>PIN</th><th>Player</th><th>Used</th><th>Result</th><th>Date</th><th></th></tr></thead>
+          <tbody>${pins.map((p) => `<tr>
+            <td class="mono" style="color:var(--cyan);font-size:14px">${esc(p.pin)}</td>
+            <td>${esc(p.player) || '-'}</td>
+            <td><span class="badge ${p.used ? 'on' : 'off'}">${p.used ? 'Yes' : 'Pending'}</span></td>
+            <td>${p.result ? `<span class="badge ${p.result === 'cheating' ? 'ban' : p.result === 'clean' ? 'on' : 'kick'}">${esc(p.result)}</span>` : '-'}</td>
+            <td class="mono">${fmtDate(p.created_at)}</td>
+            <td><button class="btn btn-ghost btn-sm" data-copypin="${esc(p.pin)}">Copy</button></td>
+          </tr>`).join('')}</tbody></table></div>` : '<div class="empty">No PINs yet.</div>'}
+      </div>`;
+  }
+
+  async function renderSignatures(view) {
+    const { signatures } = await api('/api/signatures');
+    view.innerHTML = `
+      <div class="card panel" style="margin-bottom:18px">
+        <h3>Add a cheat signature</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:12px">The scanner pulls this list live — add a cheat and every check catches it.</p>
+        <div class="set-grid">
+          <input id="sig-name" class="input" placeholder="Cheat name (e.g. Eulen)">
+          <input id="sig-files" class="input" placeholder="File names: eulen.exe, eulen.dll">
+          <input id="sig-feats" class="input" placeholder="Features: Aimbot, No recoil, ESP">
+          <div style="display:flex;gap:10px">
+            <select id="sig-sev" class="input" style="flex:1">
+              <option value="high">High (cheating)</option><option value="medium">Medium</option><option value="low">Low</option>
+            </select>
+            <button class="btn btn-primary" data-addsig>Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="card panel">
+        <h3>Signatures (${signatures.length})</h3>
+        ${signatures.length ? `<div class="table-wrap"><table>
+          <thead><tr><th>Name</th><th>Files</th><th>Features</th><th>Severity</th><th></th></tr></thead>
+          <tbody>${signatures.map((s) => `<tr>
+            <td><b>${esc(s.name)}</b></td>
+            <td class="mono">${esc((s.file_names || []).join(', '))}</td>
+            <td>${(s.features || []).map((f) => `<span class="cat">${esc(f)}</span>`).join(' ')}</td>
+            <td><span class="badge ${s.severity === 'high' ? 'ban' : s.severity === 'medium' ? 'kick' : 'off'}">${esc(s.severity)}</span></td>
+            <td><button class="btn btn-danger btn-sm" data-delsig="${esc(s.id)}">Remove</button></td>
+          </tr>`).join('')}</tbody></table></div>` : '<div class="empty">No signatures yet.</div>'}
+      </div>`;
+  }
+
+  async function renderStaff(view) {
+    const { staff } = await api('/api/staff');
+    view.innerHTML = `
+      <div class="card panel" style="margin-bottom:18px">
+        <h3>Add a staff member</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <input id="staff-name" class="input" style="flex:1;min-width:150px" placeholder="Name">
+          <input id="staff-did" class="input" style="flex:1;min-width:150px" placeholder="Discord ID (optional)">
+          <select id="staff-role" class="input"><option value="staff">Staff</option><option value="admin">Admin</option></select>
+          <button class="btn btn-primary" data-addstaff>Add</button>
+        </div>
+      </div>
+      <div class="card panel">
+        <h3>Team (${staff.length})</h3>
+        ${staff.length ? `<div class="table-wrap"><table>
+          <thead><tr><th>Name</th><th>Discord ID</th><th>Role</th><th>Added</th><th></th></tr></thead>
+          <tbody>${staff.map((m) => `<tr>
+            <td><b>${esc(m.name)}</b></td><td class="mono">${esc(m.discord_id) || '-'}</td>
+            <td><span class="badge ${m.role === 'admin' ? 'log' : 'off'}">${esc(m.role)}</span></td>
+            <td class="mono">${fmtDate(m.created_at)}</td>
+            <td><button class="btn btn-danger btn-sm" data-delstaff="${esc(m.id)}">Remove</button></td>
+          </tr>`).join('')}</tbody></table></div>` : '<div class="empty">No staff yet.</div>'}
+      </div>`;
+  }
+
   // ---------- viewer (live view + proof replay) ----------
   const viewer = { timer: null, play: null, frames: [], index: 0 };
 
@@ -548,6 +661,10 @@
       try { await navigator.clipboard.writeText(t.dataset.copy); toast('Key copied'); } catch { toast('Copy failed', true); }
       return;
     }
+    if (t.dataset.copypin) {
+      try { await navigator.clipboard.writeText(t.dataset.copypin); toast('PIN copied'); } catch { toast('Copy failed', true); }
+      return;
+    }
     if (t.dataset.open) {
       state.server = t.dataset.open;
       try { localStorage.setItem('hs_server', state.server); } catch {}
@@ -611,6 +728,39 @@
         if (!reason) return;
         await api('/api/command', { method: 'POST', body: { server: state.server, type: action, identifier: t.dataset.id, reason } });
         toast(`${action === 'ban' ? 'Ban' : 'Kick'} sent - done in a few seconds`);
+      } else if (t.dataset.newpin !== undefined) {
+        t.disabled = true;
+        const player = $('#pin-player').value.trim();
+        const { pin } = await api('/api/pins', { method: 'POST', body: { server: state.server, player } });
+        t.disabled = false;
+        const out = $('#pin-out');
+        out.hidden = false;
+        out.innerHTML = `<div class="license-box"><code class="show" style="font-size:18px;letter-spacing:3px">${esc(pin.pin)}</code>
+          <button class="btn btn-ghost btn-sm" data-copypin="${esc(pin.pin)}">Copy</button></div>
+          <p style="color:var(--muted);font-size:13px;margin-top:8px">Give this PIN to the player. They type it in the scanner.</p>`;
+        $('#pin-player').value = '';
+        renderPins($('#view'));
+      } else if (t.dataset.addsig !== undefined) {
+        const name = $('#sig-name').value.trim();
+        const fileNames = $('#sig-files').value.trim();
+        if (!name || !fileNames) { toast('Name and file names required', true); return; }
+        await api('/api/signatures', { method: 'POST', body: {
+          name, fileNames, features: $('#sig-feats').value.trim(), severity: $('#sig-sev').value } });
+        toast('Signature added');
+        render();
+      } else if (t.dataset.delsig) {
+        await api(`/api/signatures?id=${encodeURIComponent(t.dataset.delsig)}`, { method: 'DELETE' });
+        render();
+      } else if (t.dataset.addstaff !== undefined) {
+        const name = $('#staff-name').value.trim();
+        if (!name) { toast('Name required', true); return; }
+        await api('/api/staff', { method: 'POST', body: {
+          name, discordId: $('#staff-did').value.trim(), role: $('#staff-role').value } });
+        toast('Staff added');
+        render();
+      } else if (t.dataset.delstaff) {
+        await api(`/api/staff?id=${encodeURIComponent(t.dataset.delstaff)}`, { method: 'DELETE' });
+        render();
       } else if (t.id === 'refresh') {
         await loadServers();
         render();
