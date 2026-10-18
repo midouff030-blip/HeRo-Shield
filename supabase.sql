@@ -81,6 +81,8 @@ create table if not exists commands (
 create index if not exists commands_server_idx on commands(server_id, created_at);
 alter table commands enable row level security;
 
+alter table bans add column if not exists proof jsonb not null default '{}'::jsonb;
+
 -- Storage for proof screenshots (public links)
 insert into storage.buckets (id, name, public) values ('proofs', 'proofs', true)
 on conflict (id) do nothing;
@@ -90,3 +92,6 @@ alter table servers    enable row level security;
 alter table detections enable row level security;
 alter table bans       enable row level security;
 alter table players    enable row level security;
+
+-- refresh the API cache
+notify pgrst, 'reload schema';

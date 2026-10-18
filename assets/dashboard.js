@@ -19,20 +19,33 @@
   const DETECTIONS = [
     { name: 'GodMode', desc: 'Player cannot take damage', enabled: true, action: 'ban' },
     { name: 'SpeedHack', desc: 'Max speed on foot (m/s)', enabled: true, action: 'kick', value: 12, min: 5, max: 100 },
-    { name: 'NoClip', desc: 'Max meters per second', enabled: true, action: 'ban', value: 60, min: 10, max: 1000 },
-    { name: 'Invisible', desc: 'Player is invisible', enabled: true, action: 'ban' },
-    { name: 'SuperJump', desc: 'Max jump height (m)', enabled: true, action: 'kick', value: 3, min: 1, max: 50 },
+    { name: 'NoClip', desc: 'Flying / no collision', enabled: true, action: 'ban' },
+    { name: 'Invisible', desc: 'Player is invisible', enabled: true, action: 'kick' },
+    { name: 'SuperJump', desc: 'Max jump height (m)', enabled: true, action: 'kick', value: 4, min: 1, max: 50 },
     { name: 'Spectate', desc: 'Spectator mode', enabled: true, action: 'ban' },
-    { name: 'BlacklistedWeapon', desc: 'Forbidden weapons', enabled: true, action: 'ban' },
-    { name: 'Injection', desc: 'Unknown resource or fake token', enabled: true, action: 'ban' },
-    { name: 'Heartbeat', desc: 'Anti-cheat stopped (seconds)', enabled: true, action: 'kick', value: 90, min: 30, max: 600 },
-    { name: 'BlacklistedEvent', desc: 'Cheat menu events', enabled: true, action: 'ban' },
+    { name: 'BlacklistedWeapon', desc: 'Forbidden weapons (admins too)', enabled: true, action: 'ban' },
+    { name: 'DamageModifier', desc: 'One shot / damage boost', enabled: true, action: 'ban' },
+    { name: 'HealthArmor', desc: 'Health or armor above max', enabled: true, action: 'ban' },
+    { name: 'VehicleBoost', desc: 'Vehicle power boost', enabled: true, action: 'kick' },
+    { name: 'FreeCam', desc: 'Max camera distance (m)', enabled: true, action: 'kick', value: 120, min: 30, max: 1000 },
+    { name: 'VisionHack', desc: 'Night / thermal vision', enabled: true, action: 'log' },
+    { name: 'Injection', desc: 'Injected resource or fake token', enabled: true, action: 'ban' },
+    { name: 'Heartbeat', desc: 'Anti-cheat stopped (seconds)', enabled: true, action: 'kick', value: 120, min: 30, max: 600 },
+    { name: 'BlacklistedEvent', desc: 'Cheat menu events (admins too)', enabled: true, action: 'ban' },
     { name: 'EventSpam', desc: 'Events per second', enabled: true, action: 'kick', value: 40, min: 5, max: 500 },
-    { name: 'Explosion', desc: 'Explosions per 10 seconds', enabled: true, action: 'ban', value: 6, min: 1, max: 100 },
-    { name: 'EntitySpam', desc: 'Entities per 10 seconds', enabled: true, action: 'kick', value: 30, min: 5, max: 500 },
-    { name: 'BlacklistedEntity', desc: 'Forbidden vehicles / props', enabled: true, action: 'ban' },
+    { name: 'Explosion', desc: 'Explosions per 10 seconds', enabled: true, action: 'kick', value: 10, min: 1, max: 100 },
+    { name: 'EntitySpam', desc: 'Entities per 10 seconds', enabled: true, action: 'kick', value: 60, min: 5, max: 500 },
+    { name: 'BlacklistedEntity', desc: 'Forbidden vehicles / props (admins too)', enabled: true, action: 'ban' },
+    { name: 'EntityInjection', desc: 'Entity spawned by an injected menu', enabled: true, action: 'ban' },
+    { name: 'FireSpam', desc: 'Fires per 10 seconds', enabled: true, action: 'kick', value: 15, min: 1, max: 200 },
+    { name: 'ParticleSpam', desc: 'Particles per 10 seconds', enabled: true, action: 'kick', value: 40, min: 5, max: 500 },
+    { name: 'ProjectileSpam', desc: 'Projectiles per 10 seconds', enabled: true, action: 'kick', value: 40, min: 5, max: 500 },
+    { name: 'GiveWeaponOther', desc: 'Gives weapons to other players', enabled: true, action: 'ban' },
+    { name: 'RemoveWeaponOther', desc: 'Removes weapons of other players', enabled: true, action: 'kick' },
+    { name: 'ClearTasksOther', desc: 'Kicks players out of cars / freezes them', enabled: true, action: 'kick' },
     { name: 'WeaponDamage', desc: 'Max damage per hit', enabled: true, action: 'log', value: 300, min: 50, max: 5000 },
   ];
+
 
   const LOGS = [
     { name: 'Startup', desc: 'Anti-cheat started' }, { name: 'ResourceStart', desc: 'Resource started' },
@@ -399,7 +412,7 @@
   }
 
   async function startLive(identifier, name) {
-    openViewer(`Live view - ${name}`, 'A new screenshot every 3 seconds. Needs screenshot-basic on your server.');
+    openViewer(`Live view - ${name}`, 'New screenshot every 3s. Black screen? Install the screencapture resource on your server.');
     $('#viewer-badge').textContent = '● LIVE';
     $('#viewer-badge').className = 'viewer-badge live';
     $('#viewer-empty').textContent = 'Waiting for the player screen... (can take ~10s)';
@@ -428,12 +441,11 @@
   async function openProof(banId, name) {
     openViewer(`Proof - ${banId}`, name);
     try {
-      const { ban, replay } = await api(`/api/proof?server=${state.server}&banId=${encodeURIComponent(banId)}`);
-      const step = 10;
-      viewer.frames = replay.map((url, i) => ({ url, label: 'REPLAY', time: `-${Math.floor(((replay.length - i) * step) / 60)}:${String(((replay.length - i) * step) % 60).padStart(2, '0')}` }));
-      if (ban) viewer.frames.push({ url: ban, label: 'BAN MOMENT', time: '0:00' });
+      const { shots, replay } = await api(`/api/proof?server=${state.server}&banId=${encodeURIComponent(banId)}`);
+      viewer.frames = replay.map((url, i) => ({ url, label: 'REPLAY', time: `${i + 1}/${replay.length}` }));
+      shots.forEach((url, i) => viewer.frames.push({ url, label: shots.length > 1 ? `BAN MOMENT ${i + 1}/${shots.length}` : 'BAN MOMENT', time: 'ban' }));
       if (!viewer.frames.length) {
-        $('#viewer-empty').textContent = 'No proof for this ban. Proof needs screenshot-basic on your server.';
+        $('#viewer-empty').innerHTML = 'No proof saved for this ban.<br><small>Needs screencapture or screenshot-basic started on your server, and the dashboard (or Config.Screenshot.UploadUrl) reachable at ban time.</small>';
         return;
       }
       $('#viewer-controls').innerHTML = `
@@ -445,7 +457,7 @@
         <div class="thumbs" style="width:100%">${viewer.frames.map((f) => `<img src="${esc(f.url)}" alt="" loading="lazy">`).join('')}</div>`;
       $('#replay-range').oninput = (e) => setFrame(Number(e.target.value));
       $$('.thumbs img').forEach((el, n) => { el.onclick = () => setFrame(n); });
-      setFrame(ban ? viewer.frames.length - 1 : 0);
+      setFrame(shots.length ? replay.length : 0);
     } catch (e) {
       $('#viewer-empty').textContent = e.message;
     }

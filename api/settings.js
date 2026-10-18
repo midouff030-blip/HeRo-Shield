@@ -3,10 +3,13 @@ import { wrap, send, readBody, sb, httpError, requireUser, requireOwnedServer } 
 
 // name -> [min, max] for value (null = no value)
 const DETECTIONS = {
-  GodMode: null, SpeedHack: [5, 100], NoClip: [10, 1000], Invisible: null, SuperJump: [1, 50],
-  Spectate: null, BlacklistedWeapon: null, Injection: null, Heartbeat: [30, 600],
+  GodMode: null, SpeedHack: [5, 100], NoClip: null, Invisible: null, SuperJump: [1, 50],
+  Spectate: null, BlacklistedWeapon: null, DamageModifier: null, HealthArmor: null, VehicleBoost: null,
+  FreeCam: [30, 1000], VisionHack: null, Injection: null, Heartbeat: [30, 600],
   BlacklistedEvent: null, EventSpam: [5, 500], Explosion: [1, 100], EntitySpam: [5, 500],
-  BlacklistedEntity: null, WeaponDamage: [50, 5000],
+  BlacklistedEntity: null, EntityInjection: null, FireSpam: [1, 200], ParticleSpam: [5, 500],
+  ProjectileSpam: [5, 500], GiveWeaponOther: null, RemoveWeaponOther: null, ClearTasksOther: null,
+  WeaponDamage: [50, 5000],
 };
 const ACTIONS = ['ban', 'kick', 'log'];
 const LOGS = ['Startup', 'ResourceStart', 'ResourceStop', 'Join', 'Leave', 'Death', 'Revive', 'Weapon', 'Explosion', 'Admin'];

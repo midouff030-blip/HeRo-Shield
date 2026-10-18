@@ -14,7 +14,10 @@ export default wrap(async (req, res) => {
   if (!buffer.length || buffer.length > 2.5 * 1024 * 1024) throw httpError(400, 'Image too big');
 
   let path;
-  if (b.kind === 'ban') path = `${server.id}/bans/${safe(b.banId).toUpperCase()}/0.jpg`;
+  if (b.kind === 'ban') {
+    const i = Math.max(0, Math.min(9, parseInt(b.index, 10) || 0));
+    path = `${server.id}/bans/${safe(b.banId).toUpperCase()}/${i === 0 ? '0' : `p${i}`}.jpg`;
+  }
   else if (b.kind === 'replay') path = `${server.id}/bans/${safe(b.banId).toUpperCase()}/r${String(Math.max(0, Math.min(999, parseInt(b.index, 10) || 0))).padStart(3, '0')}.jpg`;
   else if (b.kind === 'live') path = `${server.id}/live/${safe(b.identifier)}.jpg`;
   else throw httpError(400, 'Invalid kind');
