@@ -23,7 +23,7 @@
     { name: 'Invisible', desc: 'Player is invisible', enabled: true, action: 'kick' },
     { name: 'SuperJump', desc: 'Max jump height (m)', enabled: true, action: 'kick', value: 4, min: 1, max: 50 },
     { name: 'Spectate', desc: 'Spectator mode', enabled: true, action: 'ban' },
-    { name: 'BlacklistedWeapon', desc: 'Forbidden weapons (admins too)', enabled: true, action: 'ban' },
+    { name: 'BlacklistedWeapon', desc: 'Forbidden weapons', enabled: true, action: 'ban' },
     { name: 'DamageModifier', desc: 'One shot / damage boost', enabled: true, action: 'ban' },
     { name: 'HealthArmor', desc: 'Health or armor above max', enabled: true, action: 'ban' },
     { name: 'VehicleBoost', desc: 'Vehicle power boost', enabled: true, action: 'kick' },
@@ -31,11 +31,11 @@
     { name: 'VisionHack', desc: 'Night / thermal vision', enabled: true, action: 'log' },
     { name: 'Injection', desc: 'Injected resource or fake token', enabled: true, action: 'ban' },
     { name: 'Heartbeat', desc: 'Anti-cheat stopped (seconds)', enabled: true, action: 'kick', value: 120, min: 30, max: 600 },
-    { name: 'BlacklistedEvent', desc: 'Cheat menu events (admins too)', enabled: true, action: 'ban' },
+    { name: 'BlacklistedEvent', desc: 'Cheat menu events', enabled: true, action: 'ban' },
     { name: 'EventSpam', desc: 'Events per second', enabled: true, action: 'kick', value: 40, min: 5, max: 500 },
     { name: 'Explosion', desc: 'Explosions per 10 seconds', enabled: true, action: 'kick', value: 10, min: 1, max: 100 },
     { name: 'EntitySpam', desc: 'Entities per 10 seconds', enabled: true, action: 'kick', value: 60, min: 5, max: 500 },
-    { name: 'BlacklistedEntity', desc: 'Forbidden vehicles / props (admins too)', enabled: true, action: 'ban' },
+    { name: 'BlacklistedEntity', desc: 'Forbidden vehicles / props', enabled: true, action: 'ban' },
     { name: 'EntityInjection', desc: 'Entity spawned by an injected menu', enabled: true, action: 'ban' },
     { name: 'FireSpam', desc: 'Fires per 10 seconds', enabled: true, action: 'kick', value: 15, min: 1, max: 200 },
     { name: 'ParticleSpam', desc: 'Particles per 10 seconds', enabled: true, action: 'kick', value: 40, min: 5, max: 500 },
@@ -387,6 +387,7 @@
     closeViewer(true);
     viewer.frames = [];
     viewer.index = 0;
+    if ($('#viewer-warn')) $('#viewer-warn').hidden = true;
     $('#viewer-title').textContent = title;
     $('#viewer-sub').textContent = sub || '';
     $('#viewer-img').className = '';
@@ -404,25 +405,64 @@
     if (!keepOpen) $('#viewer').classList.remove('open');
   }
 
+  // true if the picture is almost fully black
+  function isBlack(img) {
+    try {
+      const c = document.createElement('canvas');
+      c.width = 32; c.height = 18;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, 32, 18);
+      const d = ctx.getImageData(0, 0, 32, 18).data;
+      let sum = 0;
+      for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2];
+      return sum / (d.length / 4) / 3 < 6;
+    } catch { return false; }
+  }
+
   function showImage(url) {
     const img = $('#viewer-img');
-    img.onload = () => { img.className = 'on'; $('#viewer-empty').textContent = ''; };
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      img.className = 'on';
+      $('#viewer-empty').textContent = '';
+      const warn = $('#viewer-warn');
+      if (warn) warn.hidden = !isBlack(img);
+    };
     img.onerror = () => {};
     img.src = url;
   }
 
   async function startLive(identifier, name) {
-    openViewer(`Live view - ${name}`, 'New screenshot every 3s. Black screen? Install the screencapture resource on your server.');
+    openViewer(`Live view - ${name}`, 'New screenshot every few seconds.');
     $('#viewer-badge').textContent = '● LIVE';
     $('#viewer-badge').className = 'viewer-badge live';
     $('#viewer-empty').textContent = 'Waiting for the player screen... (can take ~10s)';
+    let lastAt = null;
+    let waiting = false;
     const tick = async () => {
+      if (waiting) return;
+      waiting = true;
       try {
-        const { liveUrl } = await api('/api/command', { method: 'POST', body: { server: state.server, type: 'screenshot', identifier } });
-        setTimeout(() => { if (viewer.timer) showImage(`${liveUrl}?t=${Date.now()}`); }, 2500);
-      } catch (e) { $('#viewer-empty').textContent = e.message; }
+        await api('/api/command', { method: 'POST', body: { server: state.server, type: 'screenshot', identifier } });
+        // wait for a new image (max ~12s)
+        for (let i = 0; i < 8 && viewer.timer; i++) {
+          await new Promise((r) => setTimeout(r, 1500));
+          const live = await api(`/api/live?server=${state.server}&identifier=${encodeURIComponent(identifier)}`);
+          if (live.url && live.at !== lastAt) {
+            lastAt = live.at;
+            showImage(live.url);
+            $('#viewer-sub').textContent = live.size < 15000
+              ? 'Screen looks black: the player game is minimized / alt-tabbed, or use the screencapture resource.'
+              : `Updated ${new Date(live.at).toLocaleTimeString('en-GB')}`;
+            break;
+          }
+        }
+      } catch (e) {
+        $('#viewer-empty').textContent = e.message;
+      }
+      waiting = false;
     };
-    viewer.timer = setInterval(tick, 3000);
+    viewer.timer = setInterval(tick, 4000);
     tick();
   }
 

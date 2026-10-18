@@ -81,6 +81,10 @@ create table if not exists commands (
 create index if not exists commands_server_idx on commands(server_id, created_at);
 alter table commands enable row level security;
 
+alter table players add column if not exists live_url text;
+alter table players add column if not exists live_at timestamptz;
+alter table players add column if not exists live_size integer;
+
 alter table bans add column if not exists proof jsonb not null default '{}'::jsonb;
 
 -- Storage for proof screenshots (public links)

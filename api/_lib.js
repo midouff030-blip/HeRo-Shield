@@ -71,6 +71,16 @@ export async function storageUpload(path, buffer, contentType = 'image/jpeg') {
   return publicUrl(path);
 }
 
+export async function storageRemove(paths) {
+  if (!paths.length) return;
+  const key = env('SUPABASE_SERVICE_KEY').trim();
+  await fetch(`${storageBase()}/storage/v1/object/proofs`, {
+    method: 'DELETE',
+    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prefixes: paths }),
+  }).catch(() => {});
+}
+
 export async function storageList(prefix) {
   const key = env('SUPABASE_SERVICE_KEY').trim();
   const r = await fetch(`${storageBase()}/storage/v1/object/list/proofs`, {

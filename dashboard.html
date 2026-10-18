@@ -413,6 +413,8 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
 .viewer-empty { color: var(--dim); font-size: 14px; text-align: center; padding: 20px; }
 .viewer-badge { position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: rgba(0,0,0,.65); }
 .viewer-badge:empty { display: none; }
+.viewer-warn { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(460px, 90%); text-align: center; padding: 18px 20px; border-radius: 12px; background: rgba(10, 14, 28, .92); border: 1px solid rgba(245,158,11,.4); color: var(--muted); font-size: 14px; }
+.viewer-warn b:first-child { display: block; color: var(--orange); font-size: 16px; margin-bottom: 6px; }
 .viewer-badge.live { color: #fff; background: var(--red); }
 .viewer-controls { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
 .viewer-controls input[type=range] { flex: 1; min-width: 160px; accent-color: var(--cyan); }
@@ -518,7 +520,8 @@ td.mono, .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5
       <div><h3 id="viewer-title"></h3><p id="viewer-sub"></p></div>
       <button class="btn btn-ghost btn-sm" data-close-viewer>✕</button>
     </div>
-    <div class="viewer-screen"><img id="viewer-img" alt=""><div id="viewer-empty" class="viewer-empty"></div><span id="viewer-badge" class="viewer-badge"></span></div>
+    <div class="viewer-screen"><img id="viewer-img" alt=""><div id="viewer-empty" class="viewer-empty"></div><span id="viewer-badge" class="viewer-badge"></span>
+      <div id="viewer-warn" class="viewer-warn" hidden><b>Black screenshot</b>The player's game is minimized / alt-tabbed (testing on yourself?), or the server uses screenshot-basic. Keep the game open on screen and use the <b>screencapture</b> resource.</div></div>
     <div id="viewer-controls" class="viewer-controls"></div>
   </div>
 </div>
