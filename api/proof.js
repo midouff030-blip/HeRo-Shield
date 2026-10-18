@@ -17,7 +17,7 @@ export default wrap(async (req, res) => {
     await sb('bans?on_conflict=server_id,ban_id', {
       method: 'POST',
       prefer: 'resolution=merge-duplicates,return=minimal',
-      body: { server_id: server.id, ban_id: banId, proof: { shots: urls(b.shots, 10), replay: urls(b.replay, 60) } },
+      body: { server_id: server.id, ban_id: banId, proof: { shots: urls(b.shots, 10), replay: urls(b.replay, 120), interval: Math.max(1, Math.min(60, Number(b.interval) || 8)) } },
     });
     return send(res, 200, { ok: true });
   }
@@ -30,7 +30,8 @@ export default wrap(async (req, res) => {
   const rows = await sb(`bans?server_id=eq.${server.id}&ban_id=eq.${enc(banId)}&select=proof`);
   const proof = (rows && rows[0] && rows[0].proof) || {};
   let shots = urls(proof.shots, 10);
-  let replay = urls(proof.replay, 60);
+  let replay = urls(proof.replay, 120);
+  const interval = Number(proof.interval) || 8;
 
   // older bans: read the storage folder
   if (!shots.length && !replay.length) {
@@ -39,5 +40,5 @@ export default wrap(async (req, res) => {
     shots = names.filter((n) => /^(0|p\d+)\.jpg$/.test(n)).sort().map((n) => publicUrl(`${prefix}/${n}`));
     replay = names.filter((n) => /^r\d+\.jpg$/.test(n)).sort().map((n) => publicUrl(`${prefix}/${n}`));
   }
-  send(res, 200, { shots, replay });
+  send(res, 200, { shots, replay, interval });
 });

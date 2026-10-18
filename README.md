@@ -27,3 +27,7 @@ Never put the `service_role` key in the website files. It is only used in `api/`
 - Instance: Free
 - Same environment variables. `DISCORD_REDIRECT_URI` = `https://YOUR-APP.onrender.com/api/auth/callback`
 - In the FiveM `shared/config.lua`: `Config.DashboardURL = 'https://YOUR-APP.onrender.com/api'`
+
+## Live video (Multi Stream)
+Smooth live video uses WebSocket: host on **Render** (Build `npm install`, Start `npm start`).
+Vercel does not support WebSocket (it falls back to slow screenshots).

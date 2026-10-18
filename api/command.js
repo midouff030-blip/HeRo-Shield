@@ -1,7 +1,7 @@
 // Dashboard: send a command to the FiveM server (screenshot / kick / ban)
 import { wrap, send, readBody, sb, str, httpError, requireUser, requireOwnedServer, publicUrl } from './_lib.js';
 
-const TYPES = ['screenshot', 'kick', 'ban'];
+const TYPES = ['screenshot', 'kick', 'ban', 'stream'];
 const safe = (v) => String(v || '').replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 80);
 
 export default wrap(async (req, res) => {

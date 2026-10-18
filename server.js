@@ -64,10 +64,31 @@ function serveFile(res, file) {
   });
 }
 
-http.createServer(async (req, res) => {
+const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
     let pathname = decodeURIComponent(url.pathname);
+
+    // live stream upload from players (raw image, handled before JSON parsing)
+    if (pathname === '/api/stream/upload' && req.method === 'POST') {
+      const { pushFrame, parseMultipart } = await import(pathToFileURL(path.join(ROOT, 'api', '_stream.js')).href);
+      const chunks = [];
+      let size = 0;
+      for await (const c of req) {
+        size += c.length;
+        if (size > 4e6) { res.statusCode = 413; return res.end('stop'); }
+        chunks.push(c);
+      }
+      const img = parseMultipart(Buffer.concat(chunks), req.headers['content-type']);
+      const result = img && img.length ? pushFrame(url.searchParams.get('k') || '', img) : null;
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.statusCode = result ? 200 : 403;
+      return res.end(result || 'stop');
+    }
+    if (pathname === '/api/stream/upload' && req.method === 'OPTIONS') {
+      res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST', 'Access-Control-Allow-Headers': '*' });
+      return res.end();
+    }
 
     if (pathname.startsWith('/api/')) {
       const handler = await getHandler(pathname.slice(5).replace(/\/$/, ''));
@@ -90,4 +111,51 @@ http.createServer(async (req, res) => {
     console.error(e);
     if (!res.headersSent) { res.statusCode = 500; res.end('Server error'); }
   }
-}).listen(PORT, () => console.log(`HeRo Shield running on port ${PORT}`));
+});
+
+// ===== Live video over WebSocket =====
+// /ws/pub?k=KEY                      <- player game (NUI) sends JPEG frames
+// /ws/view?server=ID&identifier=LIC  -> dashboard receives frames instantly
+let WebSocketServer = null;
+try { ({ WebSocketServer } = await import('ws')); } catch { console.warn('ws not installed: live video uses HTTP fallback'); }
+
+if (WebSocketServer) {
+  const wss = new WebSocketServer({ noServer: true, maxPayload: 3e6, perMessageDeflate: false });
+  const stream = await import(pathToFileURL(path.join(ROOT, 'api', '_stream.js')).href);
+  const lib = await import(pathToFileURL(path.join(ROOT, 'api', '_lib.js')).href);
+
+  server.on('upgrade', async (req, socket, head) => {
+    const url = new URL(req.url, 'http://localhost');
+    try {
+      if (url.pathname === '/ws/pub') {
+        const info = stream.keyInfo(url.searchParams.get('k') || '');
+        if (!info) return socket.destroy();
+        const key = url.searchParams.get('k');
+        return wss.handleUpgrade(req, socket, head, (ws) => {
+          stream.setPublisher(info.id, ws);
+          ws.on('message', (data, isBinary) => {
+            if (!isBinary) return;
+            const r = stream.pushFrame(key, Buffer.from(data));
+            if (r !== 'ok') { try { ws.send('stop'); ws.close(); } catch {} }
+          });
+          ws.on('close', () => stream.removePublisher(info.id, ws));
+        });
+      }
+      if (url.pathname === '/ws/view') {
+        const user = lib.getSession(req);
+        if (!user) return socket.destroy();
+        const srv = await lib.requireOwnedServer(user, url.searchParams.get('server'));
+        const id = stream.streamId(srv.id, String(url.searchParams.get('identifier') || '').slice(0, 120));
+        return wss.handleUpgrade(req, socket, head, (ws) => {
+          stream.addViewer(id, ws);
+          ws.on('close', () => stream.removeViewer(id, ws));
+        });
+      }
+    } catch (e) {
+      console.error('ws upgrade', e.message);
+    }
+    socket.destroy();
+  });
+}
+
+server.listen(PORT, () => console.log(`HeRo Shield running on port ${PORT}`));
