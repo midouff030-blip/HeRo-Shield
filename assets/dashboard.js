@@ -414,6 +414,7 @@
 
   async function renderPins(view) {
     const { pins } = await api(`/api/pins?server=${state.server}`);
+    state.pins = pins;
     view.innerHTML = `
       <div class="card panel" style="margin-bottom:18px">
         <h3>Generate a scan PIN</h3>
@@ -433,9 +434,49 @@
             <td><span class="badge ${p.used ? 'on' : 'off'}">${p.used ? 'Yes' : 'Pending'}</span></td>
             <td>${p.result ? `<span class="badge ${p.result === 'cheating' ? 'ban' : p.result === 'clean' ? 'on' : 'kick'}">${esc(p.result)}</span>` : '-'}</td>
             <td class="mono">${fmtDate(p.created_at)}</td>
-            <td><button class="btn btn-ghost btn-sm" data-copypin="${esc(p.pin)}">Copy</button></td>
+            <td><div class="actions-cell">
+              ${p.used && p.report ? `<button class="btn btn-ghost btn-sm" data-viewpin="${esc(p.pin)}">View</button>` : ''}
+              <button class="btn btn-ghost btn-sm" data-copypin="${esc(p.pin)}">Copy</button>
+            </div></td>
           </tr>`).join('')}</tbody></table></div>` : '<div class="empty">No PINs yet.</div>'}
       </div>`;
+  }
+
+  function renderPinReport(view, pin) {
+    const row = (state.pins || []).find((p) => p.pin === pin);
+    const r = row && row.report ? row.report : {};
+    const s = r.System || r.system || {};
+    const dets = r.Detections || r.detections || [];
+    const warns = r.Warnings || r.warnings || [];
+    const mods = r.Mods || r.mods || [];
+    const steam = r.SteamAccounts || r.steamAccounts || [];
+    const verdict = r.Verdict || r.verdict || row.result || 'clean';
+    const g = (a, b) => s[a] || s[b] || '-';
+    const shot = r.ScreenshotJpegBase64 || r.screenshotJpegBase64;
+    view.innerHTML = `
+      <button class="btn btn-ghost btn-sm" data-go="pins" style="margin-bottom:16px">← Back to PINs</button>
+      <div class="card panel" style="margin-bottom:16px;border-color:${verdict === 'cheating' ? 'rgba(244,63,94,.5)' : verdict === 'suspicious' ? 'rgba(245,158,11,.5)' : 'rgba(16,185,129,.5)'}">
+        <h3 style="margin:0">Player is <span style="color:${verdict === 'cheating' ? 'var(--red)' : verdict === 'suspicious' ? 'var(--orange)' : 'var(--green)'}">${esc(verdict)}</span>
+          <span class="mono" style="color:var(--dim)">PIN ${esc(pin)}${row.player ? ' · ' + esc(row.player) : ''}</span></h3>
+      </div>
+      <div class="grid-2">
+        <div class="card panel">
+          <h3>Detections (${dets.length})</h3>
+          ${dets.length ? `<div class="table-wrap"><table><thead><tr><th>File</th><th>Signature</th><th>Features</th></tr></thead>
+            <tbody>${dets.map((d) => `<tr><td class="mono">${esc(d.File || d.file)}</td><td>${esc(d.Signature || d.signature)}</td>
+              <td>${((d.Features || d.features) || []).map((f) => `<span class="cat">${esc(f)}</span>`).join(' ')}</td></tr>`).join('')}</tbody></table></div>`
+            : '<div class="empty">No cheat files found.</div>'}
+          ${warns.length ? `<h3 style="margin-top:18px">Warnings (${warns.length})</h3>${warns.map((w) => `<div class="top-row"><span>${esc(w.Title || w.title)}</span></div>`).join('')}` : ''}
+        </div>
+        <div class="card panel">
+          <h3>PC information</h3>
+          ${[['System', g('Os', 'os') + ' ' + (s.WinBuild || s.winBuild || '')], ['CPU', g('Cpu', 'cpu')], ['GPU', g('Gpu', 'gpu')], ['RAM', g('RamGb', 'ramGb')], ['Boot', g('BootTime', 'bootTime')], ['FiveM', g('FiveMLastLaunch', 'fiveMLastLaunch')], ['Recycle', g('RecycleModified', 'recycleModified')], ['HWID', g('Hwid', 'hwid')]].map(([k, v]) => `<div class="top-row"><span>${k}</span><b class="mono">${esc(v)}</b></div>`).join('')}
+          ${steam.length ? `<div class="top-row"><span>Steam</span><b class="mono">${esc(steam.join(', '))}</b></div>` : ''}
+          <div class="top-row"><span>Files scanned</span><b>${fmtNum(r.FilesScanned || r.filesScanned || 0)}</b></div>
+          <div class="top-row"><span>Mods found</span><b>${mods.length}</b></div>
+        </div>
+      </div>
+      ${shot ? `<div class="card panel" style="margin-top:16px"><h3>Screenshot</h3><img src="${esc(shot)}" style="width:100%;border-radius:10px"></div>` : ''}`;
   }
 
   async function renderSignatures(view) {
@@ -650,6 +691,7 @@
     if (t.dataset.live) return startLive(t.dataset.live, t.dataset.name);
     if (t.dataset.proof) return openProof(t.dataset.proof, t.dataset.name);
     if (t.dataset.go) return go(t.dataset.go);
+    if (t.dataset.viewpin) return renderPinReport($('#view'), t.dataset.viewpin);
 
     if (t.dataset.show !== undefined) {
       const code = t.parentElement.querySelector('[data-lic]');
