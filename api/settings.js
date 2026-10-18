@@ -6,7 +6,7 @@ const DETECTIONS = {
   GodMode: null, SpeedHack: [5, 100], NoClip: null, Invisible: null, SuperJump: [1, 50],
   Spectate: null, BlacklistedWeapon: null, DamageModifier: null, HealthArmor: null, VehicleBoost: null,
   FreeCam: [30, 1000], VisionHack: null, Injection: null, Heartbeat: [30, 600],
-  BlacklistedEvent: null, EventSpam: [5, 500], Explosion: [1, 100], EntitySpam: [5, 500],
+  BlacklistedEvent: null, EventSpam: [5, 500], Explosion: [1, 100], EntitySpam: [5, 500], VehicleSpam: [1, 100], ObjectSpam: [1, 300],
   BlacklistedEntity: null, EntityInjection: null, FireSpam: [1, 200], ParticleSpam: [5, 500],
   ProjectileSpam: [5, 500], GiveWeaponOther: null, RemoveWeaponOther: null, ClearTasksOther: null,
   WeaponDamage: [50, 5000],
