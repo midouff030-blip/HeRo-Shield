@@ -12,10 +12,13 @@ const DETECTIONS = {
   BlacklistedEntity: null, EntityInjection: null, VehicleSpam: [1, 100], PedSpam: [1, 100], ObjectSpam: [1, 300],
   EntitySpam: [5, 500], ParticleSpam: [5, 500], ParticleScale: [1, 50], Explosion: [1, 100],
   ExplosionScale: [1, 20], HiddenExplosion: null, BlacklistedExplosion: null, FireSpam: [1, 200], ProjectileSpam: [5, 500],
+  LuaTamper: null, LuaMenu: null, ResourceStop: null, DevTools: null, SemiGodMode: null, GhostMode: null,
+  SilentAim: [2, 20], AntiBurn: null, XssExploit: null, Hijack: null, ThrowVehicle: [30, 300],
+  VehicleSpeedModifier: null, ChangePlate: null,
 };
 const ACTIONS = ['ban', 'kick', 'log'];
 const LOGS = ['Startup', 'ResourceStart', 'ResourceStop', 'Join', 'Leave', 'Death', 'Revive', 'Weapon', 'Explosion', 'Admin'];
-const GENERAL_BOOL = ['RevealBanReason', 'TxAdminIntegration', 'BanIP', 'AntiVpn', 'RequireSteam', 'RequireDiscord', 'RequireNormalName'];
+const GENERAL_BOOL = ['RevealBanReason', 'TxAdminIntegration', 'BanIP', 'AntiVpn', 'AntiSpoof', 'RequireSteam', 'RequireDiscord', 'RequireNormalName'];
 const WEBHOOKS = ['Ban', 'Kick', 'Warn', 'Object', 'Vpn', 'Logs'];
 const WEBHOOK = /^https:\/\/(discord\.com|discordapp\.com|ptb\.discord\.com|canary\.discord\.com)\/api\/webhooks\/\d+\/[\w-]+$/;
 

@@ -49,8 +49,21 @@
     BlacklistedExplosion: ['ban', null, 'Forbidden explosion types.'],
     FireSpam: ['kick', [15, 1, 200, 'Max fires per 10s'], 'Spams fire.'],
     ProjectileSpam: ['kick', [40, 5, 500, 'Max projectiles per 10s'], 'Spams rockets / projectiles.'],
+    LuaTamper: ['ban', null, 'Game functions hooked / replaced by an injected Lua menu.'],
+    LuaMenu: ['ban', null, 'A known Lua cheat menu is loaded in the game.'],
+    ResourceStop: ['ban', null, 'Player stopped a server resource on his PC (anti-cheat bypass).'],
+    DevTools: ['kick', null, 'NUI devtools opened (used to edit scripts / UIs).'],
+    SemiGodMode: ['ban', null, 'Health comes back instantly after being hit by a player.'],
+    GhostMode: ['log', null, 'Ped almost transparent for more than 10 seconds.'],
+    SilentAim: ['ban', [2, 2, 20, 'Victims needed (60s)'], 'Hits players without line of sight. Reported by the victims (cannot be bypassed).'],
+    AntiBurn: ['ban', null, 'Sets other players on fire.'],
+    XssExploit: ['kick', null, 'HTML / script in the player name (breaks UIs, steals data).'],
+    Hijack: ['log', null, 'Takes the car of another player instantly (no animation).'],
+    ThrowVehicle: ['ban', [60, 30, 300, 'Max speed of an empty car (m/s)'], 'Throws empty vehicles at very high speed.'],
+    VehicleSpeedModifier: ['log', null, 'Vehicle top speed modifier (speed hack).'],
+    ChangePlate: ['log', null, 'Plate changed while driving.'],
   };
-  const LABEL = (n) => 'Anti ' + n.replace(/([a-z])([A-Z])/g, '$1 $2');
+  const LABEL = (n) => 'Anti ' + n.replace(/^Anti/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
 
   const LISTS = {
     weapons: { label: 'Weapon blacklist', hint: 'One weapon per line, e.g. WEAPON_RPG',
@@ -98,7 +111,8 @@
       ] },
       { title: 'Connection', sub: 'Configure connection settings', icon: 'plug', rows: [
         { t: 'bool', k: 'general.AntiVpn', l: 'Anti VPN', def: false, d: 'Refuse VPN / proxy / hosting IPs.' },
-        { t: 'bool', k: 'general.RequireSteam', l: 'Require Steam', def: false, d: 'Steam must be open to join.' },
+        { t: 'bool', k: 'general.AntiSpoof', l: 'Anti Spoof', def: true, d: 'Refuse players with no Rockstar license, no hardware id or duplicated licenses (HWID spoofers).' },
+        { t: 'bool', k: 'general.RequireSteam', l: 'Require Steam', def: false, d: 'Steam must be open to join. Needs set steam_webApiKey in server.cfg.' },
         { t: 'bool', k: 'general.RequireDiscord', l: 'Require Discord', def: false, d: 'Discord must be open to join.' },
         { t: 'bool', k: 'general.RequireNormalName', l: 'Require Normal Name', def: false, d: 'No html, emojis, links or too short names.' },
       ] },
@@ -113,9 +127,12 @@
       ] },
     ] },
     { id: 'client', label: 'Client', icon: 'user', cards: [
-      { title: 'Player', sub: 'Configure player settings', icon: 'user', rows: ['GodMode', 'Invisible', 'HealthHack', 'ArmorHack', 'ShrinkPed', 'TeleportWaypoint', 'ChangePed'] },
-      { title: 'Combat', sub: 'Configure combat settings', icon: 'sword', rows: ['DamageModifier', 'SuperPunch', 'MagicBullet', 'KillRate'] },
-      { title: 'Misc', sub: 'Configure misc settings', icon: 'eye', rows: ['Spectate', 'VisionHack'] },
+      { title: 'Internal', sub: 'Configure internal settings', icon: 'shield', rows: ['LuaTamper', 'LuaMenu', 'Injection', 'ResourceStop', 'DevTools'] },
+      { title: 'Player', sub: 'Configure player settings', icon: 'user', rows: ['GodMode', 'SemiGodMode', 'Invisible', 'HealthHack', 'ArmorHack', 'GhostMode', 'ShrinkPed', 'TeleportWaypoint'] },
+      { title: 'Combat', sub: 'Configure combat settings', icon: 'target', rows: ['SilentAim', 'MagicBullet', 'DamageModifier', 'SuperPunch'] },
+      { title: 'Players', sub: 'Configure players settings', icon: 'user', rows: ['KillRate', 'XssExploit', 'Spectate', 'AntiBurn'] },
+      { title: 'Misc', sub: 'Configure misc settings', icon: 'eye', rows: ['ChangePed', 'ClearTasksOther', 'VisionHack'] },
+      { title: 'Vehicles', sub: 'Configure vehicles settings', icon: 'car', rows: ['Hijack', 'ThrowVehicle', 'VehicleSpeedModifier', 'ChangePlate'] },
     ] },
     { id: 'movement', label: 'Movement', icon: 'plane', cards: [
       { title: 'Speed', sub: 'Configure speed settings', icon: 'gauge', rows: ['SpeedHack', 'SuperJump', 'InfiniteStamina'] },
@@ -131,7 +148,7 @@
       { title: 'Blacklist', sub: 'Configure blacklist settings', icon: 'ban', rows: [{ det: 'BlacklistedWeapon', list: 'weapons' }] },
     ] },
     { id: 'event', label: 'Event', icon: 'gear', cards: [
-      { title: 'General', sub: 'Configure general settings', icon: 'gear', rows: ['Injection', 'Heartbeat', 'ClearTasksOther'] },
+      { title: 'General', sub: 'Configure general settings', icon: 'gear', rows: ['Heartbeat'] },
       { title: 'Limiter', sub: 'Configure limiter settings', icon: 'shield', rows: ['EventSpam'] },
       { title: 'Blacklist', sub: 'Configure blacklist settings', icon: 'ban', rows: [{ det: 'BlacklistedEvent', list: 'events' }] },
     ] },
